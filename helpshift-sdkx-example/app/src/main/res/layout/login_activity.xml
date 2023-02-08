@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/loginDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Enter User Details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20dp"
+        android:textColor="#000"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/userIdTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter User Id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginDialogTitle" />
+
+    <EditText
+        android:id="@+id/userNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter User Name"
+        app:layout_constraintEnd_toEndOf="@+id/userIdTextView"
+        app:layout_constraintStart_toStartOf="@+id/userIdTextView"
+        app:layout_constraintTop_toBottomOf="@+id/userIdTextView" />
+
+    <EditText
+        android:id="@+id/userEmailTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="Enter User Email Id"
+        app:layout_constraintEnd_toEndOf="@+id/userNameTextView"
+        app:layout_constraintStart_toStartOf="@+id/userNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
+
+    <EditText
+        android:id="@+id/secretKeyTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Add your secret key from Dashboard"
+        app:layout_constraintEnd_toEndOf="@+id/userEmailTextView"
+        app:layout_constraintStart_toStartOf="@+id/enableAuthBtn"
+        app:layout_constraintTop_toBottomOf="@+id/enableAuthBtn" />
+
+    <LinearLayout
+        android:id="@+id/secretKeyInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/userEmailTextView"
+        app:layout_constraintStart_toStartOf="@+id/enableAuthBtn"
+        app:layout_constraintTop_toBottomOf="@+id/secretKeyTextView">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="4dp"
+            android:tint="@android:color/darker_gray"
+            android:src="@android:drawable/ic_dialog_info" />
+        <TextView
+            android:id="@+id/secretKeyInfoText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/saveLoginBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="@+id/userEmailTextView"
+        app:layout_constraintStart_toStartOf="@+id/enableAuthBtn"
+        app:layout_constraintTop_toBottomOf="@+id/secretKeyInfo" />
+
+    <CheckBox
+        android:id="@+id/enableAuthBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Enable Authentication"
+        app:layout_constraintStart_toStartOf="@+id/userEmailTextView"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailTextView" />
+
+    <LinearLayout
+        android:id="@+id/clearAnonUserSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/saveLoginBtn">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
+
+            <Button
+                android:id="@+id/clearAnonUser"
+                style="@style/ButtonStyle"
+                android:text="Clear anonymous user" />
+
+            <CheckBox
+                android:id="@+id/clearAnonUserCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear current anon user?"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

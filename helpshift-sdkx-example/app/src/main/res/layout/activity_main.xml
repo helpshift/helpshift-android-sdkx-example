@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context="com.helpshift.liteyagami.MainActivity">
+
+        <LinearLayout
+            android:id="@+id/appLevelLanguageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="App Lang: " />
+
+            <TextView
+                android:id="@+id/appLevelLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/userHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appLevelLanguageLayout">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="User"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appLevelLanguageLayout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/userSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/login"
+                    android:layout_weight="1"
+                    android:text="Login" />
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/logout"
+                    android:layout_weight="1"
+                    android:text="Logout" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/configHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Config Setup"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appLevelLanguageLayout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/configSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/configHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/issueTags"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="comma-separated tags"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <CheckBox
+                        android:id="@+id/fullPrivacyCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Full privacy"
+                        android:textSize="12sp"
+                        android:scaleX="0.9"
+                        android:scaleY="0.9"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/enableInAppNotifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable In-App Notifications"
+                android:textSize="12sp"
+                android:scaleX="0.9"
+                android:scaleY="0.9"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/conversationHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/configSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Conversation"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appLevelLanguageLayout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/convSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/conversationHeading">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/open_helpshift"
+                    android:layout_weight="1"
+                    android:text="Open Chat" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_gravity="center">
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/unreadCount"
+                    android:layout_weight="1"
+                    android:text="Unread Message Count" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center">
+
+                    <CheckBox
+                        android:id="@+id/fromRemote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="From Remote"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/helpcenterHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/convSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Help Center"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/helpcenterSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/helpcenterHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/show_helpcenter"
+                    android:text="Open Help Center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <EditText
+                    android:id="@+id/sectionIdText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="1"
+                    android:hint="FAQ Section ID"
+                    android:maxWidth="108dp"
+                    android:maxLines="1" />
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/show_faq_section"
+                    android:layout_weight="1"
+                    android:text="Show FAQ Section" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <EditText
+                    android:id="@+id/faqIdText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="1"
+                    android:hint="FAQ ID"
+                    android:maxWidth="108dp" />
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/show_single_faq"
+                    android:layout_weight="1"
+                    android:text="Show Single FAQ" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/languageHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/helpcenterSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Language"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/languageSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/languageHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <Spinner
+                    android:id="@+id/languageDropDown"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/language"
+                    android:layout_weight="2">
+                </Spinner>
+
+                <EditText
+                    android:id="@+id/languageEditText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="1"
+                    android:hint="Language Code"
+                    android:maxWidth="108dp" />
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/setLanguage"
+                    android:layout_weight="1"
+                    android:text="Set Language" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/breadcrumbHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/languageSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Breadcrumb"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/breadcrumbSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/breadcrumbHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <EditText
+                    android:id="@+id/breadCrumbEditText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="1"
+                    android:hint="Breadcrumb" />
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/setBreadcrumb"
+                    android:layout_weight="1"
+                    android:text="Leave Breadcrumb" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp">
+
+                <Button
+                    style="@style/ButtonStyle"
+                    android:id="@+id/clearBreadcrumb"
+                    android:text="Clear Breadcrumb" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/logsHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/breadcrumbSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Debug Logs"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/logsSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logsHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <Spinner
+                    android:id="@+id/logLevelSelection"
+                    android:layout_width="108dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/LogLevels" />
+
+                <EditText
+                    android:id="@+id/logTagText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="2"
+                    android:hint="Tag"
+                    android:maxWidth="96dp" />
+
+                <EditText
+                    android:id="@+id/logMessageText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="2"
+                    android:hint="Log Message"
+                    android:maxWidth="96dp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/addDebugLog"
+                style="@style/ButtonStyle"
+                android:text="Add Debug Log"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miscHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logsSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Misc"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/miscSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/miscHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp">
+
+                <Button
+                    android:id="@+id/notifPermission"
+                    style="@style/ButtonStyle"
+                    android:text="Notif Permission" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/miscSection">
+
+            
+
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>
