@@ -1,0 +1,6 @@
+ext {
+
+    // NOTE: Remember to change domain to .mobi in case using staging.
+    platform_id = '<your platform_id>'
+    domain = '<your domain>'
+}

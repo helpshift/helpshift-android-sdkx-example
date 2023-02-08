@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1058516076535123123123",
+    "project_id": "sdk-x-sample-app",
+    "storage_bucket": "sdk-x-sample-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058516312313076535:android:4711123340c02bd71f312331231237ead0f32",
+        "android_client_info": {
+          "package_name": "com.helpshift.liteyagami"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "10312321358516076312312535-avne0of8f7hcn9kih9dsbldjo8huquoq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0Aqwdqwdqwdqwdqwdqwdqddqddbhao3L3bYesb39h2rssTVFAscerHqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "10585131232116076535-avne0of8f7hcndscwwcwcwec9kih9dsbldjo8huquoq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
