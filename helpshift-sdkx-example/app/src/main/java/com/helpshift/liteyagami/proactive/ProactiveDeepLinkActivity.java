@@ -29,6 +29,8 @@ public class ProactiveDeepLinkActivity extends Activity {
         List<String> pathSegments = data.getPathSegments();
         String firstPath = pathSegments != null && pathSegments.size() > 0 ? pathSegments.get(0) : "";
 
+        // In this example, we handle the following proactive outbound link pattern
+        // myscheme://helpshift.com/proactive/?payload=eyJhY3Rpb24iOiJoYy1hcHAiLCJtZXRhIjp7ImlkIjoib3V0Ym91bmRfZGM2NDVhMzQtOTk3YS00ZTZlLThkMzktNDZiNDJjNTI3NTMyIiwib3JpZ2luIjoicHJvYWN0aXZlIn0sImNoYXRDb25maWciOnsidGFncyI6WyJwaG9uZWdhcCIsImFzc3VzIl19fQ%3D%3D
         if (scheme.equals("myscheme") && host.equals("helpshift.com") && "proactive".equals(firstPath)) {
             Helpshift.handleProactiveLink(data.toString());
             finish();

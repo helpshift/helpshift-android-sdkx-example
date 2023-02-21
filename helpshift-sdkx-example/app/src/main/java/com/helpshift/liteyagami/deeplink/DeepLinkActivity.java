@@ -25,6 +25,9 @@ public class DeepLinkActivity extends AppCompatActivity {
 
     Map<String, Object> configMap = SampleAppConfig.getSDKConfig();
 
+    // In this example, we handle the following URL pattern via deeplinks
+    // myscheme://example.com/?sectionid=489
+    // myscheme://example.com/?faqid=12
     if (scheme.equals("myscheme") && host.equals("example.com")) {
       if (data.getQueryParameter("faqid") != null) {
         Helpshift.showSingleFAQ(this, data.getQueryParameter("faqid"), configMap);
