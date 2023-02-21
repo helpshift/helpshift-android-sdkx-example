@@ -1,26 +1,44 @@
-# Helpshift SDK X Android Samples
+# Helpshift SDK X Android Example App
 
-Sample Android projects demonstrating the integration of Helpshift SDK X
+Sample Android project demonstrating the integration of Helpshift SDK X
 
 ## Requirements
 
-* see Helpshift SDK X requirements [here](https://developers.helpshift.com/sdkx_android/getting-started/)
+* See Helpshift SDK X requirements [here](https://developers.helpshift.com/sdkx_android/getting-started/)
 
-## Projects
+## Import project
 
 1. Clone the repositiory
-2. Open `helpshift-sdk-samples` in Android Studio 
+2. Open `helpshift-sdkx-example` in Android Studio or you can directly checkout via version control option in Android Studio
 
-or you can directly checkout via version control option in Android Studio
+## Building the project
 
-For the projects to build and run successfully, please follow these steps :
-* Enter your install credentials in `MainApplication.kt`. Check [here](https://developers.helpshift.com/sdkx_android/getting-started/#start-using).
-* And click on the Run button.
-* If you want to add FCM. You can configure in this sample app as mentioned [here](https://developers.helpshift.com/sdkx_android/notifications/#push-via-helpshift)
+Please follow these steps to build the app:
+* Enter your install credentials in `helpshift-sdkx-example/installCreds.gradle` file. To get your Helpshift app credentials please check [here](https://developers.helpshift.com/sdkx_android/getting-started/#start-using).
+* FCM push notification is already integrated in the example app but we have provided a dummy `google-services.json` file. 
+     * You can configure FCM by providing your own `google-services.json` file at `helpshift-sdkx-example/app/google-services.json`.
+     * You can then provide the FCM API Key in Helpshift Dashboard as mentioned [here](https://developers.helpshift.com/sdkx_android/notifications/#push-via-helpshift)
+* Build the project in Android Studio and Run on your device.
+
+
+## Example feature implementations
+
+### Initializing Helpshift SDK via `install`
+
+* Refer to `MainApplication.java` class, `onCreate()` method.
+* Notice that we have initialized the SDK as soon as the app is launched.
+
+### User Management
+
+* Refer to the following package for User related integration and example code: [User Management](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/user/LoginActivity.java)
+* Developer Documentation: [User](https://developers.helpshift.com/sdkx_android/users/)
+
+### SDK Configurations
+
+* Refer to the following package for SDK configurations: [Configurations](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/config)
 
 ## Resources
 * Documentation: [https://developers.helpshift.com/sdkx_android/getting-started/](https://developers.helpshift.com/sdkx_android/getting-started/)
-* API Reference: [https://docs.helpshift.com/docs/api/android/sdkx/v10.x/index.html](https://docs.helpshift.com/docs/api/android/sdkx/v10.x/index.html)
 * Release Notes: [https://developers.helpshift.com/sdkx_android/release-notes/](https://developers.helpshift.com/sdkx_android/release-notes/)
 
 ## License
