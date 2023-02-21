@@ -37,6 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     String origin = data.get("origin");
     if (origin != null && origin.equals("helpshift")) {
       Helpshift.handlePush(data);
+      return;
     }
 
     // Handle notifications sent from client app's backend when sending proactive outbound notifications.

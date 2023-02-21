@@ -77,16 +77,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     storage = new AppStorage(MainActivity.this);
     internalFeatures = new InternalFeaturesDummy();
 
-    if (IS_INSTALL_CALL_DELAYED) {
-      try {
-        Helpshift.install(getApplication(),
-                          SampleAppConfig.PLATFORM_ID,
-                          SampleAppConfig.DOMAIN,
-                          getInstallConfig());
-      }
-      catch (UnsupportedOSVersionException e) {
-        Log.e(TAG, "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
-      }
+    try {
+      Helpshift.install(getApplication(),
+              SampleAppConfig.PLATFORM_ID,
+              SampleAppConfig.DOMAIN,
+              getInstallConfig());
+    } catch (UnsupportedOSVersionException e) {
+      Log.e(TAG, "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
     }
 
     internalFeatures.init();

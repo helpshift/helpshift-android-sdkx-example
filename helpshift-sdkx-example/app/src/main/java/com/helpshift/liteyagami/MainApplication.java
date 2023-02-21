@@ -29,16 +29,13 @@ public class MainApplication extends Application {
       platformId = SampleAppConfig.PLATFORM_ID.trim();
     }
     // Install call
-    if (!SampleAppConfig.IS_INSTALL_CALL_DELAYED) {
-      try {
-        Helpshift.install(this,
-                          platformId,
-                          domain,
-                          getInstallConfig());
-      }
-      catch (UnsupportedOSVersionException e) {
-        Log.e("MainApp", "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
-      }
+    try {
+      Helpshift.install(this,
+              platformId,
+              domain,
+              getInstallConfig());
+    } catch (UnsupportedOSVersionException e) {
+      Log.e("MainApp", "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
     }
 
     // Set listener to collect local config when handling Proactive Outbound support links.
