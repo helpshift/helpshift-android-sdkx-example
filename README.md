@@ -28,6 +28,10 @@ Please follow these steps to build the app:
 * Refer to `MainApplication.java` class, `onCreate()` method.
 * Notice that we have initialized the SDK as soon as the app is launched.
 
+
+NOTE: `Helpshift.install()` must be called before invoking any other api in the Helpshift SDK. 
+
+
 ### User Management
 
 * Refer to the following package for User related integration and example code: [User Management](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/user/LoginActivity.java)
@@ -36,6 +40,40 @@ Please follow these steps to build the app:
 ### SDK Configurations
 
 * Refer to the following package for SDK configurations: [Configurations](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/config)
+* It contains custom example for CIF, please modify according to your needs.
+* Developer Documentation: [Configurations](https://developers.helpshift.com/sdkx_android/sdk-configuration/)
+
+### Showing Conversation/FAQ screens, Breadcrumbs, Logs, setting Language etc
+
+* For example code of various other features please refer to code examples in [MainAcitvity](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/MainActivity.java) 
+* The code is easy to interpret since each button on UI has been linked with a feature.
+* For example if you need example code for showing Conversation Screen, start refering from [Conversation onClick](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/MainActivity.java#L283)
+* Developer Documentation: [Helpshift APIs](https://developers.helpshift.com/sdkx_android/support-tools/)
+
+### Handling push notifications from Helpshift
+
+* To handle push notifications from Helpshift, refer the following code example: [Helpshift Push Notification](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/firebase/MyFirebaseMessagingService.java)
+* Notice that we have checked "origin" as "helpshift" before calling `handlePush` with the SDK.
+* NOTE: In case the app is killed in background, the system will first invoke `MainApplication.onCreate()` and only then delegate control to `MyFirebaseMessagingService`. Now since `MainApplication.onCreate()` is called first, we ensure that `Helpshift.install()` is called before calling `Helpshift.handlePush()` api.
+* Developer Documentation: [Notifications](https://developers.helpshift.com/sdkx_android/notifications/)
+
+### Handling Proactive Outbound Notifications
+
+* To show Proactive Outbound notification on device when receiving push notifications check the code sample here: [Outbound Notification](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/firebase/MyFirebaseMessagingService.java)
+* Handling click of this notification: [Handle Proactive Outbound Notification Click](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/proactive/ProactiveNotificationActivity.java)
+* Handling Proactive Outbound links as deep links: [Proactive Outbound as Deeplink](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/proactive/ProactiveDeepLinkActivity.java)
+* NOTE: In case the app is killed in background, the system will first invoke `MainApplication.onCreate()` and only then delegate control to `ProactiveNotificationActivity` or `ProactiveDeepLinkActivity`. Now since `MainApplication.onCreate()` is called first, we ensure that `Helpshift.install()` is called before calling `Helpshift.handleProactiveLink()` api.
+
+* Developer Documentation: [Proactive Outbound](https://developers.helpshift.com/sdkx_android/outbound-support/)
+
+### Handling Deeplinks
+
+* Example code to handle deeplinks: [Deeplinks example](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/deeplink/DeepLinkActivity.java)
+* Developer Documentation: [Deep Linking](https://developers.helpshift.com/sdkx_android/deep-linking/)
+
+### Event Delegates
+ 
+* Example code to check delegate callbacks from Helpshift SDK: [Event Listener Example](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/MainActivity.java#L110)
 
 ## Resources
 * Documentation: [https://developers.helpshift.com/sdkx_android/getting-started/](https://developers.helpshift.com/sdkx_android/getting-started/)
