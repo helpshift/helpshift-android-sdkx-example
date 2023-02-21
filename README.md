@@ -14,7 +14,7 @@ Sample Android project demonstrating the integration of Helpshift SDK X
 ## Building the project
 
 Please follow these steps to build the app:
-* Enter your install credentials in `helpshift-sdkx-example/installCreds.gradle` file. To get your Helpshift app credentials please check [here](https://developers.helpshift.com/sdkx_android/getting-started/#start-using).
+* Update your Helpshift App credentials in `helpshift-sdkx-example/installCreds.gradle` file. To get your Helpshift app credentials please check [here](https://developers.helpshift.com/sdkx_android/getting-started/#start-using).
 * FCM push notification is already integrated in the example app but we have provided a dummy `google-services.json` file. 
      * You can configure FCM by providing your own `google-services.json` file at `helpshift-sdkx-example/app/google-services.json`.
      * You can then provide the FCM API Key in Helpshift Dashboard as mentioned [here](https://developers.helpshift.com/sdkx_android/notifications/#push-via-helpshift)
@@ -41,6 +41,8 @@ NOTE: `Helpshift.install()` must be called before invoking any other api in the 
 
 * Refer to the following package for SDK configurations: [Configurations](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/config)
 * It contains custom example for CIF, please modify according to your needs.
+* Many other configurations are picked from the example app UI.
+* You can check the configurations taken at runtime in this example code: [Configuration from UI](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/MainActivity.java#L260)
 * Developer Documentation: [Configurations](https://developers.helpshift.com/sdkx_android/sdk-configuration/)
 
 ### Showing Conversation/FAQ screens, Breadcrumbs, Logs, setting Language etc
@@ -52,23 +54,23 @@ NOTE: `Helpshift.install()` must be called before invoking any other api in the 
 
 ### Handling push notifications from Helpshift
 
-* To handle push notifications from Helpshift, refer the following code example: [Helpshift Push Notification](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/firebase/MyFirebaseMessagingService.java)
+* To handle push notifications from Helpshift, refer the following code example: [Helpshift Push Notification](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/firebase/MyFirebaseMessagingService.java)
 * Notice that we have checked "origin" as "helpshift" before calling `handlePush` with the SDK.
 * NOTE: In case the app is killed in background, the system will first invoke `MainApplication.onCreate()` and only then delegate control to `MyFirebaseMessagingService`. Now since `MainApplication.onCreate()` is called first, we ensure that `Helpshift.install()` is called before calling `Helpshift.handlePush()` api.
 * Developer Documentation: [Notifications](https://developers.helpshift.com/sdkx_android/notifications/)
 
 ### Handling Proactive Outbound Notifications
 
-* To show Proactive Outbound notification on device when receiving push notifications check the code sample here: [Outbound Notification](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/firebase/MyFirebaseMessagingService.java)
-* Handling click of this notification: [Handle Proactive Outbound Notification Click](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/proactive/ProactiveNotificationActivity.java)
-* Handling Proactive Outbound links as deep links: [Proactive Outbound as Deeplink](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/proactive/ProactiveDeepLinkActivity.java)
+* To show Proactive Outbound notification on device when receiving push notifications check the code sample here: [Outbound Notification](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/firebase/MyFirebaseMessagingService.java)
+* Handling click of this notification: [Handle Proactive Outbound Notification Click](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/proactive/ProactiveNotificationActivity.java)
+* Handling Proactive Outbound links as deep links: [Proactive Outbound as Deeplink](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/proactive/ProactiveDeepLinkActivity.java)
 * NOTE: In case the app is killed in background, the system will first invoke `MainApplication.onCreate()` and only then delegate control to `ProactiveNotificationActivity` or `ProactiveDeepLinkActivity`. Now since `MainApplication.onCreate()` is called first, we ensure that `Helpshift.install()` is called before calling `Helpshift.handleProactiveLink()` api.
 
 * Developer Documentation: [Proactive Outbound](https://developers.helpshift.com/sdkx_android/outbound-support/)
 
 ### Handling Deeplinks
 
-* Example code to handle deeplinks: [Deeplinks example](helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/deeplink/DeepLinkActivity.java)
+* Example code to handle deeplinks: [Deeplinks example](/helpshift-sdkx-example/app/src/main/java/com/helpshift/liteyagami/deeplink/DeepLinkActivity.java)
 * Developer Documentation: [Deep Linking](https://developers.helpshift.com/sdkx_android/deep-linking/)
 
 ### Event Delegates
