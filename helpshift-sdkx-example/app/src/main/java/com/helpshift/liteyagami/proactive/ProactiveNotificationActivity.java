@@ -2,7 +2,7 @@ package com.helpshift.liteyagami.proactive;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.helpshift.Helpshift;
 

@@ -108,4 +108,14 @@
         <item>Warn</item>
         <item>Error</item>
     </string-array>
+
+    <string-array name="ciftypes">
+        <item>Type...</item>
+        <item>singleline</item>
+        <item>multiline</item>
+        <item>number</item>
+        <item>dropdown</item>
+        <item>date</item>
+        <item>checkbox</item>
+    </string-array>
 </resources>

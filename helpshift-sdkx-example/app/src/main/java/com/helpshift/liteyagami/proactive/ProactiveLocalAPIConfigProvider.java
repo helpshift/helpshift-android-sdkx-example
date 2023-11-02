@@ -1,6 +1,6 @@
 package com.helpshift.liteyagami.proactive;
 
-import static com.helpshift.liteyagami.config.SampleAppConfig.getSDKConfig;
+import static com.helpshift.liteyagami.config.SampleAppConfig.getStoredCIFAsConfig;
 
 import com.helpshift.proactive.HelpshiftProactiveAPIConfigCollector;
 
@@ -16,7 +16,7 @@ public class ProactiveLocalAPIConfigProvider implements HelpshiftProactiveAPICon
 
     @Override
     public Map<String, Object> getAPIConfig() {
-        Map<String, Object> localConfig = getSDKConfig();
+        Map<String, Object> localConfig = getStoredCIFAsConfig();
         localConfig.put("tags", new String[]{"localConfig", "paid", "renewal", "vip", "level"});
         return localConfig;
     }

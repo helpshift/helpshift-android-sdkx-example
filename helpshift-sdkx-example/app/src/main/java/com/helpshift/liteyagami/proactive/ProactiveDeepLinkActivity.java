@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.helpshift.Helpshift;
+import com.helpshift.liteyagami.MainApplication;
+import com.helpshift.liteyagami.storage.StorageConstants;
 
 import java.util.List;
 
@@ -35,7 +37,9 @@ public class ProactiveDeepLinkActivity extends Activity {
             Helpshift.handleProactiveLink(data.toString());
             finish();
         } else {
-            Toast.makeText(this, "Invalid link to handle", Toast.LENGTH_SHORT).show();
+            if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+                Toast.makeText(this, "Invalid link to handle", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
