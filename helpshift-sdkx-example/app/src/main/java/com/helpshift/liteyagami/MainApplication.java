@@ -15,11 +15,15 @@ import static com.helpshift.liteyagami.config.SampleAppConfig.getInstallConfig;
 
 public class MainApplication extends Application {
 
+  private static MainApplication instance;
+  public static AppStorage storage;
+
   @Override
   public void onCreate() {
     super.onCreate();
 
-    AppStorage storage = new AppStorage(this);
+    instance = this;
+    storage = new AppStorage(this);
 
     String domain = storage.storageGet(SampleAppConfig.DOMAIN_KEY);
     String platformId = storage.storageGet(SampleAppConfig.PLATFORM_ID_KEY);
@@ -29,13 +33,16 @@ public class MainApplication extends Application {
       platformId = SampleAppConfig.PLATFORM_ID.trim();
     }
     // Install call
-    try {
-      Helpshift.install(this,
-              platformId,
-              domain,
-              getInstallConfig());
-    } catch (UnsupportedOSVersionException e) {
-      Log.e("MainApp", "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
+    if (!SampleAppConfig.IS_INSTALL_CALL_DELAYED) {
+      try {
+        Helpshift.install(this,
+                          platformId,
+                          domain,
+                          getInstallConfig());
+      }
+      catch (UnsupportedOSVersionException e) {
+        Log.e("MainApp", "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
+      }
     }
 
     // Set listener to collect local config when handling Proactive Outbound support links.
@@ -43,4 +50,11 @@ public class MainApplication extends Application {
 
   }
 
+  public static Application getApplication(){
+    return instance;
+  }
+
+  public static AppStorage getAppStorage() {
+    return storage;
+  }
 }

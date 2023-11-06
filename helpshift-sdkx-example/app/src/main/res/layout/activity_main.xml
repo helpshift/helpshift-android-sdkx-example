@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context="com.helpshift.liteyagami.MainActivity">
@@ -34,6 +34,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="N/A" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="SDK Version: " />
+
+            <TextView
+                android:id="@+id/sdkversion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -95,14 +109,119 @@
             android:layout_marginTop="12dp"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/userSection">
+            app:layout_constraintTop_toBottomOf="@id/userSection"
+            >
 
             <TextView
                 style="@style/HeadingText"
-                android:text="Config Setup"
+                android:text="Config setup"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/appLevelLanguageLayout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/issueTags"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="Enter comma-separated tags here"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/firstUserMessage"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="First user message (auto-send)"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/conversationPrefillText"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="Conversation prefill text (allow user editing)"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/fullPrivacyCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable Full Privacy?"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/initiateChatOnLoad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Initiate chat on load?"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/showToastMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show Toast Logs"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/customConfigHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/configHeading">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Custom config"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appLevelLanguageLayout" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textSize="12dp"
+                android:text="Attach additional config values here if required. true/false values for this section are converted to boolean" />
 
             <View
                 android:layout_width="match_parent"
@@ -117,47 +236,162 @@
             android:orientation="vertical"
             android:padding="8dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/configHeading">
+            app:layout_constraintTop_toBottomOf="@id/customConfigHeading">
 
             <LinearLayout
+                android:id="@+id/genericConfigEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
 
                 <EditText
-                    android:id="@+id/issueTags"
+                    android:id="@+id/genericConfigKey"
                     style="@style/EditTextStyle"
                     android:layout_weight="5"
-                    android:hint="comma-separated tags"
+                    android:hint="Key"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                <EditText
+                    android:id="@+id/genericConfigValue"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="Value"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
 
-                    <CheckBox
-                        android:id="@+id/fullPrivacyCheck"
-                        android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/genericConfigAdd"
+                    style="@style/ButtonStyle"
+                    android:layout_weight="1"
+                    android:text="Add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cifConfigHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/genericConfigEdit">
+
+                <TextView
+                    style="@style/HeadingText"
+                    android:text="Custom Issue Fields"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cifConfigHeading" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lightSilver" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cifEditSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cifConfigHeading">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <EditText
+                        android:id="@+id/cifName"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:hint="Name..."
+                        android:maxWidth="108dp" />
+
+                    <Spinner
+                        android:id="@+id/cifTypeSelect"
+                        android:layout_width="108dp"
                         android:layout_height="wrap_content"
-                        android:text="Full privacy"
-                        android:textSize="12sp"
-                        android:scaleX="0.9"
-                        android:scaleY="0.9"/>
+                        android:layout_weight="1"
+                        android:entries="@array/ciftypes"
+                        android:spinnerMode="dropdown">
+                    </Spinner>
+
+                    <EditText
+                        android:id="@+id/cifValueEdit"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:hint="Value..."
+                        android:maxWidth="108dp" />
+
+                    <Button
+                        android:id="@+id/addCif"
+                        style="@style/ButtonStyle"
+                        android:layout_weight="1"
+                        android:text="Add" />
+
                 </LinearLayout>
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/enableInAppNotifications"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enable In-App Notifications"
-                android:textSize="12sp"
-                android:scaleX="0.9"
-                android:scaleY="0.9"/>
+                android:layout_marginTop="16dp"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/genericConfigInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Config preview" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/genericConfigJsonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="{}"
+                    android:textColor="#111" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/genericConfigReset"
+                    style="@style/ButtonStyle"
+                    android:layout_weight="1"
+                    android:background="#ffbfb8"
+                    android:text="Reset Config"
+                    android:textColor="#d62704" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -561,10 +795,21 @@
                     android:id="@+id/notifPermission"
                     style="@style/ButtonStyle"
                     android:text="Notif Permission" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp">
+
+                <Button
+                    android:id="@+id/showCloseSupportNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Close Support Session Notification"
+                    android:textAllCaps="false"/>
             </LinearLayout>
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -576,7 +821,6 @@
             app:layout_constraintTop_toBottomOf="@+id/miscSection">
 
             
-
         </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

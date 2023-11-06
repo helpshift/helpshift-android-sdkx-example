@@ -3,11 +3,13 @@ package com.helpshift.liteyagami.deeplink;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.helpshift.Helpshift;
+import com.helpshift.liteyagami.MainApplication;
 import com.helpshift.liteyagami.config.SampleAppConfig;
+import com.helpshift.liteyagami.storage.StorageConstants;
 
 import java.util.Map;
 
@@ -23,7 +25,7 @@ public class DeepLinkActivity extends AppCompatActivity {
     String scheme = data.getScheme();
     String host = data.getHost();
 
-    Map<String, Object> configMap = SampleAppConfig.getSDKConfig();
+    Map<String, Object> configMap = SampleAppConfig.getStoredCIFAsConfig();
 
     // In this example, we handle the following URL pattern via deeplinks
     // myscheme://example.com/?sectionid=489
@@ -38,7 +40,9 @@ public class DeepLinkActivity extends AppCompatActivity {
       }
       finish();
     } else {
-      Toast.makeText(this, "Invalid link to handle", Toast.LENGTH_SHORT).show();
+      if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+        Toast.makeText(this, "Invalid link to handle", Toast.LENGTH_SHORT).show();
+      }
     }
   }
 }

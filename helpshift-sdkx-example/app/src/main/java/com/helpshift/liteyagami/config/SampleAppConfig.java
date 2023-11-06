@@ -1,9 +1,19 @@
 package com.helpshift.liteyagami.config;
 
 
+import android.util.Log;
+
 import com.helpshift.liteyagami.BuildConfig;
+import com.helpshift.liteyagami.MainApplication;
 import com.helpshift.liteyagami.R;
+import com.helpshift.liteyagami.storage.AppStorage;
+import com.helpshift.liteyagami.storage.StorageConstants;
 import com.helpshift.util.ConfigValues;
+import com.helpshift.util.JsonUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +29,15 @@ public class SampleAppConfig {
   public static final String DOMAIN_KEY = "domain";
   public static final String PLATFORM_ID_KEY = "platformId";
 
-  public static Map<String, Object> getSDKConfig(){
+  public static Map<String, Object> getStoredCIFAsConfig() {
+
     Map<String, Object> config = new HashMap<>();
-    config.put("customIssueFields", getCifs());
+    try {
+      AppStorage storage = MainApplication.getAppStorage();
+      config.put("cifs", JsonUtils.toMap(new JSONObject(storage.storageGet(StorageConstants.KEY_CIFS, "{}"))));
+    } catch (JSONException e) {
+      Log.e("Helpshift", "Error reading stored CIFs", e);
+    }
     return config;
   }
 
@@ -42,21 +58,21 @@ public class SampleAppConfig {
     return config;
   }
 
-  public static Map<String, Object> getCifs() {
-    Map<String, String> joiningDate = new HashMap<>();
-    joiningDate.put("type", "dt");
-    joiningDate.put("value", "1505927361535");
+  public static Map<String, Object> defaultCIFs() {
+    Map<String, Object> joiningDate = new HashMap<>();
+    joiningDate.put("type", "date");
+    joiningDate.put("value", 1505927361535L);
 
     Map<String, String> stockLevel = new HashMap<>();
-    stockLevel.put("type", "n");
+    stockLevel.put("type", "number");
     stockLevel.put("value", "1505");
 
     Map<String, String> employeeName = new HashMap<>();
-    employeeName.put("type", "sl");
+    employeeName.put("type", "singleline");
     employeeName.put("value", "Bugs helpshift");
 
     Map<String, String> isPro = new HashMap<>();
-    isPro.put("type", "b");
+    isPro.put("type", "checkbox");
     isPro.put("value", "true");
 
     Map<String, Object> cifMap = new HashMap<>();
