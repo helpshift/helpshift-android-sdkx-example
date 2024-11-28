@@ -16,9 +16,19 @@ import java.util.Random;
 public class NotificationUtils {
 
     public static int SESSION_CLOSE_NOTIFICATION_ID = 1001;
+    public static int PROACTIVE_NOTIFICATION_ID = 1002;
     public static int NOTIFICATION_ID = 1002;
 
-    public static void showNotification(Context context, Intent intent,String channelId,int notificationId, String title, String message, int icon, boolean isAutoCancellable){
+    private NotificationUtils() {
+        // empty
+    }
+
+    public static void showNotification(Context context,
+                                        Intent intent,
+                                        String channelId,
+                                        int notificationId,
+                                        String title, String message,
+                                        int icon, boolean isAutoCancellable){
         if (context == null) {
             return;
         }

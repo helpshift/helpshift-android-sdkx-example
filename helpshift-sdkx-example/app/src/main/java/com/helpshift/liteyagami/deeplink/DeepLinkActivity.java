@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.helpshift.Helpshift;
-import com.helpshift.liteyagami.MainApplication;
+import com.helpshift.liteyagami.InstanceProvider;
 import com.helpshift.liteyagami.config.SampleAppConfig;
 import com.helpshift.liteyagami.storage.StorageConstants;
 
@@ -40,7 +40,7 @@ public class DeepLinkActivity extends AppCompatActivity {
       }
       finish();
     } else {
-      if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+      if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
         Toast.makeText(this, "Invalid link to handle", Toast.LENGTH_SHORT).show();
       }
     }

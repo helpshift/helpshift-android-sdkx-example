@@ -118,4 +118,46 @@
         <item>date</item>
         <item>checkbox</item>
     </string-array>
+
+    <string-array name="masterAttributes">
+        <item>NULL</item>
+        <item>first_name</item>
+        <item>last_name</item>
+        <item>full_name</item>
+        <item>display_name</item>
+        <item>last_country</item>
+        <item>last_city</item>
+        <item>age</item>
+        <item>lifetime_value</item>
+        <item>user_persona</item>
+        <item>user_vip_segment</item>
+        <item>user_support_status</item>
+        <item>last_active_date</item>
+        <item>accepted_t_and_c</item>
+        <item>preferred_language</item>
+        <item>full_privacy_enabled</item>
+        <item>new_tags</item>
+        <item>tags_to_remove</item>
+        <item>reset_tags</item>
+    </string-array>
+
+    <string-array name="appAttributes">
+        <item>NULL</item>
+        <item>device_model</item>
+        <item>os_version</item>
+        <item>app_version</item>
+        <item>user_vip_segment</item>
+        <item>sdk_version</item>
+        <item>language</item>
+        <item>app_rating</item>
+        <item>user_paying_segment</item>
+        <item>country</item>
+        <item>user_support_status</item>
+        <item>user_persona</item>
+        <item>accepted_t_and_c</item>
+        <item>user_level</item>
+        <item>app_status</item>
+        <item>city</item>
+        <item>lifetime_value</item>
+    </string-array>
 </resources>

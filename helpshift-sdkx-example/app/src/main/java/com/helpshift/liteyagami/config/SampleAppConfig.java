@@ -4,7 +4,7 @@ package com.helpshift.liteyagami.config;
 import android.util.Log;
 
 import com.helpshift.liteyagami.BuildConfig;
-import com.helpshift.liteyagami.MainApplication;
+import com.helpshift.liteyagami.InstanceProvider;
 import com.helpshift.liteyagami.R;
 import com.helpshift.liteyagami.storage.AppStorage;
 import com.helpshift.liteyagami.storage.StorageConstants;
@@ -29,11 +29,15 @@ public class SampleAppConfig {
   public static final String DOMAIN_KEY = "domain";
   public static final String PLATFORM_ID_KEY = "platformId";
 
+  private SampleAppConfig() {
+    // empty
+  }
+
   public static Map<String, Object> getStoredCIFAsConfig() {
 
     Map<String, Object> config = new HashMap<>();
     try {
-      AppStorage storage = MainApplication.getAppStorage();
+      AppStorage storage = InstanceProvider.getInstance().getAppStorage();
       config.put("cifs", JsonUtils.toMap(new JSONObject(storage.storageGet(StorageConstants.KEY_CIFS, "{}"))));
     } catch (JSONException e) {
       Log.e("Helpshift", "Error reading stored CIFs", e);
@@ -59,27 +63,21 @@ public class SampleAppConfig {
   }
 
   public static Map<String, Object> defaultCIFs() {
-    Map<String, Object> joiningDate = new HashMap<>();
-    joiningDate.put("type", "date");
-    joiningDate.put("value", 1505927361535L);
-
-    Map<String, String> stockLevel = new HashMap<>();
-    stockLevel.put("type", "number");
-    stockLevel.put("value", "1505");
-
-    Map<String, String> employeeName = new HashMap<>();
-    employeeName.put("type", "singleline");
-    employeeName.put("value", "Bugs helpshift");
-
-    Map<String, String> isPro = new HashMap<>();
-    isPro.put("type", "checkbox");
-    isPro.put("value", "true");
-
     Map<String, Object> cifMap = new HashMap<>();
-    cifMap.put("joining_date", joiningDate);
-    cifMap.put("stock_level", stockLevel);
-    cifMap.put("employee_name", employeeName);
-    cifMap.put("is_pro", isPro);
+
+    cifMap.put("joining_date", createMap("date", 1505927361535L));
+    cifMap.put("stock_level", createMap("number", "1505"));
+    cifMap.put("employee_name", createMap("singleline", "Bugs helpshift"));
+    cifMap.put("is_pro", createMap("checkbox", "true"));
+
     return cifMap;
   }
+
+  private static Map<String, Object> createMap(String type, Object value) {
+    Map<String, Object> map = new HashMap<>();
+    map.put("type", type);
+    map.put("value", value);
+    return map;
+  }
+
 }

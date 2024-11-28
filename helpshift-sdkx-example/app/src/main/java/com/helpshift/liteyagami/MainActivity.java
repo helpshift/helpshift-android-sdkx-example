@@ -2,6 +2,9 @@ package com.helpshift.liteyagami;
 
 import static com.helpshift.liteyagami.config.SampleAppConfig.IS_INSTALL_CALL_DELAYED;
 import static com.helpshift.liteyagami.config.SampleAppConfig.getInstallConfig;
+import static com.helpshift.liteyagami.util.StorageConstants.IDENTITY_TOKEN_KEY;
+import static com.helpshift.liteyagami.util.StorageConstants.LOGIN_DATA_KEY;
+import static com.helpshift.liteyagami.util.StorageConstants.USER_IDENTITIES_KEY;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,12 +15,6 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,28 +28,36 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.helpshift.HSDebugLog;
 import com.helpshift.Helpshift;
-import com.helpshift.HelpshiftAuthenticationFailureReason;
 import com.helpshift.HelpshiftEvent;
-import com.helpshift.HelpshiftEventsListener;
 import com.helpshift.UnsupportedOSVersionException;
 import com.helpshift.core.HSContext;
 import com.helpshift.liteyagami.config.SampleAppConfig;
-import com.helpshift.liteyagami.external.*;
-
+import com.helpshift.liteyagami.eventlistener.HSEventsFlowListener;
+import com.helpshift.liteyagami.eventlistener.HelpshiftEventData;
+import com.helpshift.liteyagami.eventlistener.HelpshiftEventsFlow;
 import com.helpshift.liteyagami.storage.AppStorage;
 import com.helpshift.liteyagami.storage.StorageConstants;
 import com.helpshift.liteyagami.user.LoginActivity;
+import com.helpshift.liteyagami.user.UserWithIdentityActivity;
 import com.helpshift.liteyagami.util.NotificationUtils;
 import com.helpshift.liteyagami.util.StringUtils;
+import com.helpshift.log.HSLogger;
 import com.helpshift.util.ApplicationUtil;
 import com.helpshift.util.JsonUtils;
 import com.helpshift.util.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,46 +66,36 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, HSEventsFlowListener {
 
   private static final String TAG = "Helpshift_Demo";
 
   private AppStorage storage;
-  private EditText issueTagsEditText;
-  private CheckBox fullPrivacyCheckBox;
-  private CheckBox fetchFromRemoteCheckBox;
-  private EditText sectionIdEditText;
-  private EditText faqIdEditText;
-  private EditText languageEditText;
-  private Spinner languageDropDown;
   private String[] languageCodes;
   private boolean shouldIgnoreFirstSelectCall = true;
-  private EditText breadcrumbEditText;
-  private Spinner logLevelDropDown;
-  private EditText logTagEditText;
-  private EditText logMessageEditText;
-  private EditText genericConfigKeyEditText;
-  private EditText genericConfigValueEditText;
-  private CheckBox initiateChatOnLoad;
-  private CheckBox showToastLogs;
-  private EditText firstUserMessageEditText;
-  private EditText conversationPrefillTextEditText;
-  private EditText cifNameEditText;
-  private EditText cifValueEditText;
-  private Spinner cifTypeSpinner;
+
+  private EditText issueTagsEditText, sectionIdEditText, faqIdEditText, languageEditText,
+          breadcrumbEditText, logTagEditText, logMessageEditText,
+          genericConfigKeyEditText, genericConfigValueEditText,
+          firstUserMessageEditText, conversationPrefillTextEditText,
+          cifNameEditText, cifValueEditText;
+
+  private CheckBox fullPrivacyCheckBox, fetchFromRemoteCheckBox, initiateChatOnLoad, clearAnonUserCheckbox, showToastLogs;
+
+  private Spinner languageDropDown, logLevelDropDown, cifTypeSpinner;
 
   private HashMap<String, Object> genericConfig = new HashMap<>();
   private Map<String, Object> cifs = new HashMap<>();
 
-  private InternalFeatures internalFeatures;
-
   private final TextWatcher textWatcher = new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      // Ignore
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+      // Ignore
     }
 
     @Override
@@ -114,9 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    storage = MainApplication.getAppStorage();
-
-    internalFeatures = new InternalFeaturesDummy();
+    storage = InstanceProvider.getInstance().getAppStorage();
 
     if (IS_INSTALL_CALL_DELAYED) {
       try {
@@ -129,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.e(TAG, "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
       }
     }
-
-    internalFeatures.init();
 
     // Get FCM push token
     FirebaseInstanceId.getInstance().getInstanceId()
@@ -148,65 +139,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       createChannel();
     }
 
-    Helpshift.setHelpshiftEventsListener(new HelpshiftEventsListener() {
-      @Override
-      public void onEventOccurred(@NonNull String eventName, Map<String, Object> data) {
-        if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-          Toast.makeText(MainActivity.this, eventName + " " + data.toString(), Toast.LENGTH_SHORT).show();
-        }
-        Log.d(TAG, "eventName " + eventName + " " + Utils.prettyFormatHashMap(data, 0));
-
-        if (HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT.equals(eventName)) {
-          int count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
-          boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
-
-          AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-          dialog.setMessage("Count : " + count + ", From Cache: " + fromCache);
-          dialog.setCancelable(true);
-          dialog.show();
-        }
-
-        if (HelpshiftEvent.ACTION_CLICKED.equals(eventName)) {
-          String actionType = (String) data.get(HelpshiftEvent.DATA_ACTION_TYPE);
-          String actionData = (String) data.get(HelpshiftEvent.DATA_ACTION);
-
-          //This is for edge Case if event gets invoked without passing any data
-          if (Utils.isEmpty(actionType) && Utils.isEmpty(actionData)) {
-            Log.d(TAG, "Event Received for " + eventName + " with no data");
-            return;
-          }
-
-          if (Utils.isEmpty(actionType) || Utils.isEmpty(actionData)) {
-            Log.d(TAG, "Event Received for " + eventName + " with actionType or action Data as empty");
-            return;
-          }
-
-          if (actionType.equals(HelpshiftEvent.DATA_ACTION_TYPE_LINK)) {
-            Log.d(TAG, "Event Received for " + eventName + " action type " + actionType + " link " + actionData);
-          } else if (actionType.equals(HelpshiftEvent.DATA_ACTION_TYPE_CALL)) {
-            Log.d(TAG, "Event Received for " + eventName + " action type " + actionType + " number " + actionData);
-          }
-        }
-
-        if (HelpshiftEvent.AGENT_MESSAGE_RECEIVED.equals(eventName)) {
-          handleAgentMessageReceivedEvent(data, eventName);
-        }
-      }
-
-      @Override
-      public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {
-          if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-              Toast.makeText(MainActivity.this,
-                      "Error in user authentication: " + reason.name(), Toast.LENGTH_SHORT).show();
-          }
-        Log.e(TAG, "Error in user authentication: " + reason.name());
-      }
-    });
-
-
     findViewById(R.id.open_helpshift).setOnClickListener(this);
     findViewById(R.id.login).setOnClickListener(this);
     findViewById(R.id.logout).setOnClickListener(this);
+    findViewById(R.id.user_identity_button).setOnClickListener(this);
     findViewById(R.id.show_helpcenter).setOnClickListener(this);
     findViewById(R.id.show_faq_section).setOnClickListener(this);
     findViewById(R.id.show_single_faq).setOnClickListener(this);
@@ -220,7 +156,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.genericConfigReset).setOnClickListener(this);
     findViewById(R.id.showCloseSupportNotification).setOnClickListener(this);
     findViewById(R.id.addCif).setOnClickListener(this);
+    findViewById(R.id.showHelpshiftEvents).setOnClickListener(this);
+    findViewById(R.id.clearAnonUser).setOnClickListener(this);
 
+    clearAnonUserCheckbox = findViewById(R.id.clearAnonUserCheckBox);
     breadcrumbEditText = findViewById(R.id.breadCrumbEditText);
 
     logLevelDropDown = findViewById(R.id.logLevelSelection);
@@ -303,7 +242,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     try {
       cifs = JsonUtils.toMap(new JSONObject(storage.storageGet(StorageConstants.KEY_CIFS, "{}")));
 
-      JSONObject jsonObject = new JSONObject(storage.storageGet(StorageConstants.GENERIC_CONFIG));
+      String genericConfigData = storage.storageGet(StorageConstants.GENERIC_CONFIG);
+      JSONObject jsonObject = new JSONObject(Utils.isEmpty(genericConfigData) ? "{}" : genericConfigData);
       Iterator<String> keys = jsonObject.keys();
 
       while (keys.hasNext()) {
@@ -319,61 +259,94 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   private void handleAgentMessageReceivedEvent(Map<String, Object> eventData, String eventName) {
 
-    if (HelpshiftEvent.AGENT_MESSAGE_RECEIVED.equals(eventName)) {
-      String publishId = (String) eventData.get(HelpshiftEvent.DATA_PUBLISH_ID);
-      String type = (String) eventData.get(HelpshiftEvent.DATA_MESSAGE_TYPE);
-      String body = (String) eventData.get(HelpshiftEvent.DATA_MESSAGE_BODY);
-      Long createdTs = (Long) eventData.get(HelpshiftEvent.DATA_CREATED_TIME);
+    if (!HelpshiftEvent.AGENT_MESSAGE_RECEIVED.equals(eventName)) {
+      return;
+    }
 
-      if (Utils.isEmpty(publishId) && Utils.isEmpty(type) && Utils.isEmpty(body) && createdTs == null) {
-        Log.d(TAG, eventName + " Received no data");
-        return;
+    String publishId = (String) eventData.get(HelpshiftEvent.DATA_PUBLISH_ID);
+    String type = (String) eventData.get(HelpshiftEvent.DATA_MESSAGE_TYPE);
+    String body = (String) eventData.get(HelpshiftEvent.DATA_MESSAGE_BODY);
+    Long createdTs = (Long) eventData.get(HelpshiftEvent.DATA_CREATED_TIME);
+
+    // Check if the main fields are empty or null
+    if (isDataIncomplete(publishId, type, body, createdTs, eventName)) {
+      return;
+    }
+
+    // Build the event log message
+    StringBuilder eventLog = new StringBuilder(eventName)
+            .append(" publishId : ").append(publishId)
+            .append(" type : ").append(type)
+            .append(" body : ").append(body)
+            .append(" createdTs : ").append(createdTs);
+
+    List<Object> attachments = (List<Object>) eventData.get(HelpshiftEvent.DATA_ATTACHMENTS);
+
+    // Handle attachments, if any
+    appendAttachmentsLog(attachments, eventLog);
+
+    Log.d(TAG, eventLog.toString());
+  }
+
+  private boolean isDataIncomplete(String publishId, String type, String body, Long createdTs, String eventName) {
+    // Check if all the main fields are empty
+    if (Utils.isEmpty(publishId) && Utils.isEmpty(type) && Utils.isEmpty(body) && createdTs == null) {
+      Log.d(TAG, eventName + " Received no data");
+      return true;
+    }
+
+    // Special case: app_review_request type allows empty body
+    if (Utils.isEmpty(publishId) || Utils.isEmpty(type) ||
+            (Utils.isEmpty(body) && !HelpshiftEvent.DATA_MESSAGE_TYPE_APP_REVIEW_REQUEST.equals(type)) || createdTs == null) {
+      Log.d(TAG, eventName + " Received incomplete data");
+      return true;
+    }
+
+    return false;
+  }
+
+  private void appendAttachmentsLog(List<Object> attachments, StringBuilder eventLog) {
+    if (Utils.isEmpty(attachments)) {
+      eventLog.append(".\nNo attachments received in message");
+      return;
+    }
+
+    for (int i = 0; i < attachments.size(); i++) {
+      Map<String, Object> attachment = (Map<String, Object>) attachments.get(i);
+
+      eventLog.append("\nattachment ").append(i + 1);
+
+      String url = (String) attachment.get(HelpshiftEvent.DATA_URL);
+      String contentType = (String) attachment.get(HelpshiftEvent.DATA_CONTENT_TYPE);
+      String fileName = (String) attachment.get(HelpshiftEvent.DATA_FILE_NAME);
+      Integer size = (Integer) attachment.get(HelpshiftEvent.DATA_SIZE);
+
+      if (isAttachmentDataIncomplete(url, fileName, size, i, eventLog)) {
+        continue;
       }
 
-      // app_review_request message type body will be empty
-      if (Utils.isEmpty(publishId) || Utils.isEmpty(type) || (Utils.isEmpty(body) && !HelpshiftEvent.DATA_MESSAGE_TYPE_APP_REVIEW_REQUEST.equals(type)) || createdTs == null) {
-        Log.d(TAG, eventName + " Received incomplete data");
-        return;
-      }
-
-      StringBuilder eventLog = new StringBuilder(eventName);
-      eventLog.append(" publishId : ").append(publishId).append(" type : ").append(type);
-      eventLog.append(" body : ").append(body).append(" createdTs :").append(createdTs);
-
-      List<Object> attachments = (List<Object>) eventData.get(HelpshiftEvent.DATA_ATTACHMENTS);
-
-      if (Utils.isEmpty(attachments)) {
-        eventLog.append(".\nNo attachments received in message");
-      } else {
-
-        for (int i = 0; i < attachments.size(); i++) {
-          Map<String, Object> attachment = (Map<String, Object>) attachments.get(i);
-
-          eventLog.append("\nattachment ").append(i + 1);
-
-          String url = (String) attachment.get(HelpshiftEvent.DATA_URL);
-          String contentType = (String) attachment.get(HelpshiftEvent.DATA_CONTENT_TYPE);
-          String fileName = (String) attachment.get(HelpshiftEvent.DATA_FILE_NAME);
-          Integer size = (Integer) attachment.get(HelpshiftEvent.DATA_SIZE);
-
-          if (Utils.isEmpty(url) && Utils.isEmpty(fileName) && size == null) {
-            eventLog.append(" Received no data for attachment ").append(i + 1);
-            continue;
-          }
-
-          if (Utils.isEmpty(url) || Utils.isEmpty(fileName) || size == null) {
-            eventLog.append(" Received incomplete data for attachment ").append(i + 1);
-            continue;
-          }
-
-          eventLog.append(" url : ").append(url).append(" contentType : ").append(contentType)
-                  .append(" fileName : ").append(fileName).append(" size : ").append(size);
-        }
-      }
-
-      Log.d(TAG, eventLog.toString());
+      eventLog.append(" url : ").append(url)
+              .append(" contentType : ").append(contentType)
+              .append(" fileName : ").append(fileName)
+              .append(" size : ").append(size);
     }
   }
+
+  private boolean isAttachmentDataIncomplete(String url, String fileName, Integer size, int index, StringBuilder eventLog) {
+    // Check if the attachment fields are empty or null
+    if (Utils.isEmpty(url) && Utils.isEmpty(fileName) && size == null) {
+      eventLog.append(" Received no data for attachment ").append(index + 1);
+      return true;
+    }
+
+    if (Utils.isEmpty(url) || Utils.isEmpty(fileName) || size == null) {
+      eventLog.append(" Received incomplete data for attachment ").append(index + 1);
+      return true;
+    }
+
+    return false;
+  }
+
 
   private void setupLanguageSelectionUI(String currentSetLang) {
     int languagePosition = -1;
@@ -414,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   @Override
   protected void onResume() {
     super.onResume();
+    HelpshiftEventsFlow.setHelpshiftEventFlowListener(this);
 
     TextView appLevelLang = findViewById(R.id.appLevelLanguage);
     appLevelLang.setText(HSContext.getInstance().getDevice().getLanguage());
@@ -464,7 +438,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Helpshift.showConversation(MainActivity.this, config);
         break;
       case R.id.logout:
-        Helpshift.logout();
+        logoutUser();
+        break;
+      case R.id.user_identity_button:
+        startUserIdentityActivity();
         break;
       case R.id.show_helpcenter:
         Helpshift.showFAQs(MainActivity.this, config);
@@ -502,14 +479,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateConfigOnUI();
         break;
       case R.id.showCloseSupportNotification:
-        showCloseSupportSessionNotification(MainApplication.getApplication());
+        showCloseSupportSessionNotification(InstanceProvider.getInstance().getMainApplication());
         break;
       case R.id.addCif:
         handleCIFAddition();
         break;
+      case R.id.showHelpshiftEvents:
+        showHelpshiftEvents();
+        break;
+      case R.id.clearAnonUser:
+        Helpshift.clearAnonymousUserOnLogin(clearAnonUserCheckbox.isChecked());
+        String toast = clearAnonUserCheckbox.isChecked() ? "Anonymous User cleared" : "Anonymous User will be retained";
+        Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
+        break;
+      default:
+        break;
     }
+  }
 
-    internalFeatures.handleClicks(v.getId());
+  private void logoutUser() {
+    Helpshift.logout();
+    storage.storageSet(USER_IDENTITIES_KEY, "");
+    storage.storageSet(IDENTITY_TOKEN_KEY, "");
+    storage.storageSet(LOGIN_DATA_KEY, "");
+  }
+
+  private void showHelpshiftEvents() {
+    try {
+      List<HelpshiftEventData> helpshiftEventsList = HelpshiftEventsFlow.getInstance().getHelpshiftEvents();
+      JSONArray helpshiftEventsFlowList = new JSONArray();
+
+      for (HelpshiftEventData helpshiftEventData : helpshiftEventsList) {
+        JSONObject event = new JSONObject();
+        event.put("name", helpshiftEventData.getEventName());
+        event.put("data", new JSONObject(helpshiftEventData.getData()));
+        helpshiftEventsFlowList.put(event);
+      }
+
+      AlertDialog.Builder mBuilder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
+              .setTitle("Helpshift Events")
+              .setMessage(helpshiftEventsFlowList.toString(4))
+              .setPositiveButton("Close", null);
+
+      AlertDialog mAlertDialog = mBuilder.create();
+      mAlertDialog.show();
+    } catch (JSONException e) {
+      HSLogger.e(TAG, "Failed to prettify JSON, setting original string", e);
+    }
   }
 
   private void showCloseSupportSessionNotification(Context context) {
@@ -524,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     NotificationUtils.showNotification(context, intent, SampleAppConfig.CHANNEL_ID,
             NotificationUtils.SESSION_CLOSE_NOTIFICATION_ID, "Close HelpShift Session",
-            "Click to close helpshift session", com.helpshift.R.drawable.hs__chat_icon, true);
+            "Click to close helpshift session", R.drawable.hs__chat_icon, true);
   }
 
   private void handleCIFAddition() {
@@ -579,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     String conversationPrefillText = conversationPrefillTextEditText.getText().toString();
     storage.storageSet(StorageConstants.CONVERSATION_PREFILL_TEXT, conversationPrefillText);
-
+    
     explicitConfig.put("initiateChatOnLoad", initiateChatOnLoading);
     explicitConfig.put("fullPrivacy", fullPrivacy);
 
@@ -629,6 +645,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         break;
       case "Error":
         HSDebugLog.e(tag, message);
+        break;
+      default:
         break;
     }
 
@@ -738,6 +756,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     startActivity(loginIntent);
   }
 
+  private void startUserIdentityActivity() {
+    Intent userIdentityIntent = new Intent(this, UserWithIdentityActivity.class);
+    startActivity(userIdentityIntent);
+  }
+
   @RequiresApi(api = Build.VERSION_CODES.O)
   private void createChannel() {
     String id = SampleAppConfig.CHANNEL_ID;
@@ -798,5 +821,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     storage.storageSet(StorageConstants.KEY_CIFS, json);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    HelpshiftEventsFlow.deregisterHelpshiftEventFlowListener();
+  }
+
+  @Override
+  public void onNewEvent(HelpshiftEventData helpshiftEventData) {
+    String eventName = helpshiftEventData.getEventName();
+    Map<String, Object> data = helpshiftEventData.getData();
+
+    if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+      Toast.makeText(MainActivity.this, eventName + " " + data.toString(), Toast.LENGTH_SHORT).show();
+    }
+    Log.d(TAG, "eventName: " + eventName + " " + Utils.prettyFormatHashMap(data, 0));
+
+    if (HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT.equals(eventName)) {
+      int count = (int) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT);
+      boolean fromCache = (boolean) data.get(HelpshiftEvent.DATA_MESSAGE_COUNT_FROM_CACHE);
+
+      new AlertDialog.Builder(MainActivity.this)
+              .setMessage("Count: " + count + ", From Cache: " + fromCache)
+              .setCancelable(true)
+              .show();
+    }
+
+    // Handle agent message received event
+    if (HelpshiftEvent.AGENT_MESSAGE_RECEIVED.equals(eventName)) {
+      handleAgentMessageReceivedEvent(data, eventName);
+    }
   }
 }

@@ -10,10 +10,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.helpshift.Helpshift;
-import com.helpshift.liteyagami.R;
 import com.helpshift.liteyagami.config.SampleAppConfig;
-import com.helpshift.liteyagami.proactive.ProactiveNotificationActivity;
 import com.helpshift.liteyagami.util.NotificationUtils;
+import com.helpshift.liteyagami.proactive.ProactiveNotificationActivity;
 import com.helpshift.log.HSLogger;
 import com.helpshift.util.Utils;
 
