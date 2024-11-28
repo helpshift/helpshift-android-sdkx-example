@@ -524,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     NotificationUtils.showNotification(context, intent, SampleAppConfig.CHANNEL_ID,
             NotificationUtils.SESSION_CLOSE_NOTIFICATION_ID, "Close HelpShift Session",
-            "Click to close helpshift session", R.drawable.hs__chat_icon, true);
+            "Click to close helpshift session", com.helpshift.R.drawable.hs__chat_icon, true);
   }
 
   private void handleCIFAddition() {

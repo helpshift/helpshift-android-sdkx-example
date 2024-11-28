@@ -45,7 +45,7 @@ public class SampleAppConfig {
     Map<String, Object> config = new HashMap<>();
     config.put("enableLogging", true);
     config.put("notificationSoundId", R.raw.custom_notification);
-    config.put("notificationIcon", R.drawable.hs__chat_icon);
+    config.put("notificationIcon", com.helpshift.R.drawable.hs__chat_icon);
     config.put("notificationChannelId", SampleAppConfig.CHANNEL_ID);
     config.put("notificationLargeIcon", R.drawable.airplane);
 

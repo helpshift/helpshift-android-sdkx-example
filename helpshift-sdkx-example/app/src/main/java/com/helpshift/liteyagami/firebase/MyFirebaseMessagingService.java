@@ -70,6 +70,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     intent.putExtra("proactiveNotification", true);
     intent.putExtra("proactiveLink", proactiveUrl);
 
-    NotificationUtils.showNotification(context,intent,SampleAppConfig.CHANNEL_ID, NotificationUtils.NOTIFICATION_ID,data.get("title"),data.get("message"),R.drawable.hs__chat_icon,true);
+    NotificationUtils.showNotification(context,intent,SampleAppConfig.CHANNEL_ID, NotificationUtils.NOTIFICATION_ID,data.get("title"),data.get("message"), com.helpshift.R.drawable.hs__chat_icon,true);
   }
 }
