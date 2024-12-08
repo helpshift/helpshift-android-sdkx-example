@@ -4,6 +4,18 @@ import java.util.Map;
 
 public class StringUtils {
 
+    private StringUtils() {
+        // empty
+    }
+
+    public static boolean isBooleanValue(String value) {
+
+        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+            return true;
+        }
+        return false;
+    }
+
     public static String generatePrettyStringForMap(Map<String, Object> config, String indentSpace) {
         StringBuilder sb = new StringBuilder();
 

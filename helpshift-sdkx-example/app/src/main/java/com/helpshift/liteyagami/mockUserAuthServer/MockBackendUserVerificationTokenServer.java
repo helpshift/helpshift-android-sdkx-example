@@ -11,7 +11,11 @@ import javax.crypto.spec.SecretKeySpec;
  * This logic/code should be a backend service and should NOT be included in the app's code.
  * The Secret Key should reside on your backend so that it is secure and can be rotated whenever needed.
  */
-public class MockBackendUserTokenServer {
+public class MockBackendUserVerificationTokenServer {
+
+    private MockBackendUserVerificationTokenServer() {
+        // empty
+    }
 
     /**
      * Logic to generate user auth token with given data.

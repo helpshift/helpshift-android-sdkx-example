@@ -1,10 +1,9 @@
 package com.helpshift.liteyagami.user;
 
-import static com.helpshift.liteyagami.mockUserAuthServer.MockBackendUserTokenServer.generateHMAC;
+import static com.helpshift.liteyagami.mockUserAuthServer.MockBackendUserVerificationTokenServer.generateHMAC;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -16,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.helpshift.Helpshift;
+import com.helpshift.liteyagami.InstanceProvider;
 import com.helpshift.liteyagami.MainActivity;
-import com.helpshift.liteyagami.MainApplication;
 import com.helpshift.liteyagami.R;
 import com.helpshift.liteyagami.storage.StorageConstants;
 import com.helpshift.util.Utils;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.login_activity);
         getSupportActionBar().setTitle("Login");
 
@@ -44,8 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         enableAuthentication.setChecked(false);
         userSecretKey = findViewById(R.id.secretKeyTextView);
         final LinearLayout userAuthTokenInfo = findViewById(R.id.userAuthTokenInfo);
-
-        final CheckBox clearAnonUserCheckbox = findViewById(R.id.clearAnonUserCheckBox);
 
         TextView secretKeyInfoText = findViewById(R.id.secretKeyInfoText);
         String infoText = "Secret key is used here for demo purposes. This key should NOT be included in your app's code. " +
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     String token = generateHMAC(id, email, secretKey);
                     if (Utils.isEmpty(token)) {
-                        if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+                        if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
                             Toast.makeText(LoginActivity.this,
                                     "Error generating auth token. Check logs.",
                                     Toast.LENGTH_SHORT).show();
@@ -105,11 +105,11 @@ public class LoginActivity extends AppCompatActivity {
                 boolean loginSuccess = Helpshift.login(generateLoginData(id, name, email, secretKey));
 
                 if (loginSuccess) {
-                    if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+                    if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
                         Toast.makeText(LoginActivity.this, "Logged in:" + userName, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
+                    if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
                         Toast.makeText(LoginActivity.this, "Error in Login: Check logs", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -117,18 +117,6 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
 
-            }
-        });
-
-        Button clearAnonymousUser = findViewById(R.id.clearAnonUser);
-        clearAnonymousUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Helpshift.clearAnonymousUserOnLogin(clearAnonUserCheckbox.isChecked());
-                String toast = clearAnonUserCheckbox.isChecked() ? "Anonymous User cleared" : "Anonymous User will be retained";
-                if (MainApplication.getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-                    Toast.makeText(LoginActivity.this, toast, Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.helpshift.liteyagami">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -13,7 +12,7 @@
         android:localeConfig="@xml/locales_config"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Helpshift.SDK.Demo.Theme">
         <activity android:name="com.helpshift.liteyagami.SampleNotificationActivity"
             android:exported="false"/>
         <activity android:name="com.helpshift.liteyagami.deeplink.DeepLinkActivity"
@@ -36,6 +35,7 @@
         </activity>
         <activity android:name="com.helpshift.liteyagami.MainActivity"
             android:launchMode="singleTop"
+            android:theme="@style/Helpshift.SDK.Demo.Theme"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +46,16 @@
         <activity
             android:name="com.helpshift.liteyagami.user.LoginActivity"
             android:label="Login"
+            android:theme="@style/Helpshift.SDK.Demo.Theme"
+            android:parentActivityName="com.helpshift.liteyagami.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.helpshift.liteyagami.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.helpshift.liteyagami.user.UserWithIdentityActivity"
+            android:label="User Identity"
+            android:theme="@style/Helpshift.SDK.Demo.Theme"
             android:parentActivityName="com.helpshift.liteyagami.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

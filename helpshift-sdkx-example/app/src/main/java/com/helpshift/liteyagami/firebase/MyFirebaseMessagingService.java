@@ -10,10 +10,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.helpshift.Helpshift;
-import com.helpshift.liteyagami.R;
 import com.helpshift.liteyagami.config.SampleAppConfig;
-import com.helpshift.liteyagami.proactive.ProactiveNotificationActivity;
 import com.helpshift.liteyagami.util.NotificationUtils;
+import com.helpshift.liteyagami.proactive.ProactiveNotificationActivity;
 import com.helpshift.log.HSLogger;
 import com.helpshift.util.Utils;
 
@@ -70,6 +69,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     intent.putExtra("proactiveNotification", true);
     intent.putExtra("proactiveLink", proactiveUrl);
 
-    NotificationUtils.showNotification(context,intent,SampleAppConfig.CHANNEL_ID, NotificationUtils.NOTIFICATION_ID,data.get("title"),data.get("message"),R.drawable.hs__chat_icon,true);
+    NotificationUtils.showNotification(context,intent,SampleAppConfig.CHANNEL_ID, NotificationUtils.NOTIFICATION_ID,data.get("title"),data.get("message"), com.helpshift.R.drawable.hs__chat_icon,true);
   }
 }

@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/identitiesHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/identitiesSection"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="User Identities"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Add user identities here. true/false values for this section are converted to boolean"
+                android:textSize="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/identitiesSection"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/identitiesHeading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Radio Buttons for selecting views -->
+                <RadioGroup
+                    android:id="@+id/identityRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/manualIdentityRadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginRight="4dp"
+                        android:checked="true"
+                        android:text="Enter Identity Manually" />
+
+                    <RadioButton
+                        android:id="@+id/clipboardIdentityRadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:checked="false"
+                        android:text="Paste Identity token" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/clipboardIdentitySection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/clipboardIdentityToken"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:hint="Paste Identity Token"
+                    android:maxLines="6"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingEnd="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/manualIdentitySection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/identifierSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <EditText
+                        android:id="@+id/identifierKey"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="2"
+                        android:maxWidth="48dp"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp"
+                        android:text="identifier" />
+
+                    <EditText
+                        android:id="@+id/identifierValue"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="2"
+                        android:hint="Add identifier"
+                        android:maxWidth="108dp"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/valueSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <EditText
+                        android:id="@+id/valueKey"
+                        style="@style/EditTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="2"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp"
+                        android:text="value" />
+
+                    <EditText
+                        android:id="@+id/valueValue"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="2"
+                        android:hint="Add value"
+                        android:maxWidth="108dp"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/iatSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <EditText
+                        android:id="@+id/iatKey"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:maxWidth="48dp"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp"
+                        android:text="iat" />
+
+                    <TextView
+                        android:id="@+id/iatValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_weight="2"
+                        android:text="Issue At time" />
+
+                    <Button
+                        android:id="@+id/iatTime"
+                        style="@style/ButtonStyle"
+                        android:layout_weight="2"
+                        android:text="Pick Date"
+                        android:textColor="@android:color/black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/metaDataSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <EditText
+                        android:id="@+id/metaData"
+                        style="@style/EditTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp"
+                        android:text="metadata" />
+
+                    <EditText
+                        android:id="@+id/metaDataKey"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="2"
+                        android:hint="key"
+                        android:maxWidth="108dp"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp" />
+
+                    <EditText
+                        android:id="@+id/metaDataValue"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="2"
+                        android:hint="value"
+                        android:maxWidth="108dp"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp" />
+
+                    <Button
+                        android:id="@+id/addMetadata"
+                        style="@style/ButtonStyle"
+                        android:layout_weight="2"
+                        android:text="Add"
+                        android:textColor="@android:color/black"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/addIdentitiesLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/addIdentityDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_weight="2"
+                        android:text="Add Identity to Identities Map"
+                        android:textSize="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/addIdentities"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/addIdentities"
+                        style="@style/ButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:text="Add Identity"
+                        android:textColor="@android:color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/addUserIdentityDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_weight="2"
+                        android:text="Add User Identities JWT to Helpshift.addUserIdentity()"
+                        android:textSize="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/addUserIdentities"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <Button
+                        android:id="@+id/addUserIdentities"
+                        style="@style/ButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="Add User Identities"
+                        android:textColor="@android:color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="start">
+
+                <TextView
+                    android:id="@+id/userIdentitiesInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Identities payload preview" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start">
+
+                    <TextView
+                        android:id="@+id/userIdentitiesJsonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="{}"
+                        android:textColor="#111" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="start">
+
+                    <TextView
+                        android:id="@+id/secretKeyInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="Secret Key" />
+
+                    <EditText
+                        android:id="@+id/userSecretKey"
+                        style="@style/EditTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="2"
+                        android:maxLines="4"
+                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp"
+                        android:hint="paste secret key here..." />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/loginData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Login Data" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loginDataSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/loginDataKey"
+                    style="@style/EditTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="2"
+                    android:hint="key"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+
+                <EditText
+                    android:id="@+id/loginDataValue"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="2"
+                    android:hint="value"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+                <Button
+                    android:id="@+id/addLoginData"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/loginDataPreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="{}"
+                    android:textColor="#111" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/loginWithIdentities"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Login"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/resetIdentities"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/resetIdentities"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Reset"
+                    android:textColor="#d62704"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/copyToken" />
+
+                <Button
+                    android:id="@+id/copyToken"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Copy Token"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/loginResponse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="Login Response :"
+                android:textColor="#111" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/masterAttributesHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/identitiesSection"
+            tools:layout_editor_absoluteX="0dp">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Update Master Attributes"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Add system level data."
+                android:textSize="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/masterAttributes"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/masterAttributesHeading">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Add tags as comma separated strings"
+                android:textSize="12dp" />
+
+            <LinearLayout
+                android:id="@+id/masterAttributesSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Spinner
+                    android:id="@+id/masterAttributesDropDown"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/masterAttributes"
+                    android:layout_weight="2">
+                </Spinner>
+
+                <EditText
+                    android:id="@+id/masterAttributeKey"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="key"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+                <EditText
+                    android:id="@+id/masterAttributeValue"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="Value"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+                <Button
+                    android:id="@+id/addMasterAttribute"
+                    style="@style/ButtonStyle"
+                    android:layout_weight="1"
+                    android:text="Add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/appAttributeCUFHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/genericConfigEdit">
+
+                <TextView
+                    style="@style/HeadingText"
+                    android:text="Custom User Fields"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cufHeading" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lightSilver" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cufEditSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cufHeading">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <EditText
+                        android:id="@+id/masterCufName"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:hint="CUF key"
+                        android:maxWidth="108dp" />
+
+                    <EditText
+                        android:id="@+id/masterCufValue"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:hint="CUF Value"
+                        android:maxWidth="108dp" />
+
+                    <Button
+                        android:id="@+id/addMasterCUF"
+                        style="@style/ButtonStyle"
+                        android:layout_weight="1"
+                        android:text="Add" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/masterAttributeInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Master Attributes preview" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/masterAttributeJsonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="{}"
+                    android:textColor="#111" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/masterAttributeLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/masterAttribute"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Update Master Attributes"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/appAttributesHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/masterAttributes"
+            tools:layout_editor_absoluteX="0dp">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Update App Attributes"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Add App level data"
+                android:textSize="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/appAttributes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@id/helpshiftEvents"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appAttributesHeading">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Add tags as comma separated strings"
+                android:textSize="12dp" />
+
+            <LinearLayout
+                android:id="@+id/appAttributesSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Spinner
+                    android:id="@+id/appAttributesDropDown"
+                    android:layout_width="108dp"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/appAttributes"
+                    android:layout_weight="2">
+                </Spinner>
+
+                <EditText
+                    android:id="@+id/appAttributeKey"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="Key"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+                <EditText
+                    android:id="@+id/appAttributeValue"
+                    style="@style/EditTextStyle"
+                    android:layout_weight="5"
+                    android:hint="Value"
+                    android:maxWidth="108dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp" />
+
+                <Button
+                    android:id="@+id/addAppAttribute"
+                    style="@style/ButtonStyle"
+                    android:layout_weight="1"
+                    android:text="Add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cufHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/genericConfigEdit">
+
+                <TextView
+                    style="@style/HeadingText"
+                    android:text="Custom User Fields"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cufHeading" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lightSilver" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/appAttributeCufEditSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cufHeading">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <EditText
+                        android:id="@+id/appAttributeCufName"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:hint="CUF key"
+                        android:maxWidth="108dp" />
+
+                    <EditText
+                        android:id="@+id/appAttributeCUFValue"
+                        style="@style/EditTextStyle"
+                        android:layout_weight="1"
+                        android:hint="CUF Value"
+                        android:maxWidth="108dp" />
+
+                    <Button
+                        android:id="@+id/appAttributeAddCUf"
+                        style="@style/ButtonStyle"
+                        android:layout_weight="1"
+                        android:text="Add" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/appAttributeInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="App Attributes preview" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/appAttributeJsonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="{}"
+                    android:textColor="#111" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/appAttributeLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/appAttribute"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Update App Attributes"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/helpshiftEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/appAttributes">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Helpshift Events Flow"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/helpshiftEvents">
+
+            <TextView
+                android:id="@+id/helpshiftEventsList"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:nestedScrollingEnabled="true"
+                android:overScrollMode="always"
+                android:scrollbars="vertical"
+                android:text="List of Helpshift Events" />
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

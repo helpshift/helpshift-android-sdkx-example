@@ -86,6 +86,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="8dp">
+
+                <Button
+                    android:id="@+id/clearAnonUser"
+                    style="@style/ButtonStyle"
+                    android:text="Clear anonymous user" />
+
+                <CheckBox
+                    android:id="@+id/clearAnonUserCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear current anon user?"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center">
 
                 <Button
@@ -95,11 +114,21 @@
                     android:text="Login" />
 
                 <Button
+                    android:id="@+id/user_identity_button"
                     style="@style/ButtonStyle"
-                    android:id="@+id/logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Logout" />
+                    android:text="Login With User Identity" />
+
             </LinearLayout>
+
+            <Button
+                android:id="@+id/logout"
+                style="@style/ButtonStyle"
+                android:layout_weight="1"
+                android:text="Logout"
+                android:textColor="#d62704"/>
         </LinearLayout>
 
         <LinearLayout
@@ -780,47 +809,35 @@
             android:id="@+id/miscSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="vertical"
             android:padding="8dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/miscHeading">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/notifPermission"
+                style="@style/ButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp">
+                android:text="Grant Notification Permission"
+                android:layout_marginBottom="8dp"/>
 
-                <Button
-                    android:id="@+id/notifPermission"
-                    style="@style/ButtonStyle"
-                    android:text="Notif Permission" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/showCloseSupportNotification"
+                android:layout_width="wrap_content"
+                style="@style/ButtonStyle"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp">
+                android:text="Show Close Support Session Notification"
+                android:layout_marginBottom="8dp"/>
 
-                <Button
-                    android:id="@+id/showCloseSupportNotification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Show Close Support Session Notification"
-                    android:textAllCaps="false"/>
-            </LinearLayout>
-        </LinearLayout>
+            <Button
+                android:id="@+id/showHelpshiftEvents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ButtonStyle"
+                android:text="Show All Helpshift Events"
+                android:layout_marginBottom="8dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/miscSection">
-
-            
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

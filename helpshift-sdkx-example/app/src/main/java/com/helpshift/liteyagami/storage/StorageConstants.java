@@ -2,6 +2,10 @@ package com.helpshift.liteyagami.storage;
 
 public class StorageConstants {
 
+    private StorageConstants() {
+        // empty
+    }
+
     public static final String KEY_ENABLE_FULL_PRIVACY = "fullPrivacy";
     public static final String KEY_ISSUE_TAGS = "issueTags";
     public static final String KEY_FROM_REMOTE = "fromRemote";
