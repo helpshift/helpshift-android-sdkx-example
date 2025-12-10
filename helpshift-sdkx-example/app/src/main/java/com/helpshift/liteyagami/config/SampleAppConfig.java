@@ -23,9 +23,11 @@ public class SampleAppConfig {
   public static final String DOMAIN = BuildConfig.DOMAIN;
   public static final String PLATFORM_ID = BuildConfig.PLATFORM_ID;
   public static final String CHANNEL_ID = "LITE_SDK_CHANNEL";
+  public static final String PRO_ACTIVE_SUPPORT_CHANNEL_ID = "PROACTIVE_SUPPORT_SDK_CHANNEL";
+  public static final String PRO_ACTIVE_ENGAGEMENT_CHANNEL_ID = "PROACTIVE_ENGAGEMENT_SDK_CHANNEL";
 
   // set this flag to true if want to test the delayed install call
-  public static boolean IS_INSTALL_CALL_DELAYED = false;
+  public static final boolean IS_INSTALL_CALL_DELAYED = false;
   public static final String DOMAIN_KEY = "domain";
   public static final String PLATFORM_ID_KEY = "platformId";
 
@@ -49,7 +51,7 @@ public class SampleAppConfig {
     Map<String, Object> config = new HashMap<>();
     config.put("enableLogging", true);
     config.put("notificationSoundId", R.raw.custom_notification);
-    config.put("notificationIcon", com.helpshift.R.drawable.hs__chat_icon);
+    config.put("notificationIcon", R.drawable.hs__chat_icon);
     config.put("notificationChannelId", SampleAppConfig.CHANNEL_ID);
     config.put("notificationLargeIcon", R.drawable.airplane);
 
@@ -72,6 +74,18 @@ public class SampleAppConfig {
 
     return cifMap;
   }
+
+  public static Map<String, Object> getProactivePushNotificationDefaults() {
+    Map<String, Object> defaults = new HashMap<>();
+
+    defaults.put("largeNotificationIconId", R.drawable.proactive_large_notification_id);
+    defaults.put("notificationIconId", R.drawable.proactive_icon);
+    defaults.put("soundId", R.raw.proactive_default_sound);
+    defaults.put("proactiveSupportChannelId", PRO_ACTIVE_SUPPORT_CHANNEL_ID);
+    defaults.put("proactiveEngageChannelId", PRO_ACTIVE_ENGAGEMENT_CHANNEL_ID);
+
+    return defaults;
+    }
 
   private static Map<String, Object> createMap(String type, Object value) {
     Map<String, Object> map = new HashMap<>();

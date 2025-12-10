@@ -4,12 +4,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context="com.helpshift.liteyagami.MainActivity">
+
+        <FrameLayout
+            android:id="@+id/containerInternal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textAppUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="4dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerInternal"
+            android:text="Sample App User Information" />
+
+        <ImageView
+            android:id="@+id/retryUserInformation"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginHorizontal="8dp"
+            android:src="@drawable/hs__reload_icon"
+            app:layout_constraintStart_toEndOf="@id/textAppUser"
+            app:layout_constraintTop_toTopOf="@id/textAppUser"/>
+
+        <TextView
+            android:id="@+id/textAppUserType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginHorizontal="4dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textAppUser"
+            tools:text="User T wegergergergype" />
+
+        <TextView
+            android:id="@+id/textAppUserInformation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@id/textAppUserType"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textAppUserType"
+            tools:text="User Inforfsefesfse gsjgoisjgiosogu sogiujrtiogu jstio hrstohjjriohj rsihsrtohi jrstohjrtiohj rstjiomation" />
 
         <LinearLayout
             android:id="@+id/appLevelLanguageLayout"
@@ -18,15 +70,13 @@
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/textAppUserInformation">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:text="App Lang: " />
 
             <TextView
@@ -39,9 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:text="SDK Version: " />
 
             <TextView
@@ -165,7 +213,7 @@
                     android:hint="Enter comma-separated tags here"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -180,7 +228,7 @@
                     android:hint="First user message (auto-send)"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -195,7 +243,7 @@
                     android:hint="Conversation prefill text (allow user editing)"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
             </LinearLayout>
 
         <LinearLayout
@@ -216,14 +264,6 @@
                 android:layout_height="wrap_content"
                 android:text="Initiate chat on load?"
                 android:textSize="12sp" />
-
-            <CheckBox
-                android:id="@+id/showToastMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show Toast Logs"
-                android:textSize="12sp" />
-
         </LinearLayout>
 
         </LinearLayout>
@@ -280,7 +320,7 @@
                     android:hint="Key"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <EditText
                     android:id="@+id/genericConfigValue"
@@ -289,7 +329,7 @@
                     android:hint="Value"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <Button
                     android:id="@+id/genericConfigAdd"
@@ -381,9 +421,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="Config preview" />
 
             </LinearLayout>
@@ -399,9 +437,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="{}"
                     android:textColor="#111" />
             </LinearLayout>
@@ -421,7 +457,58 @@
                     android:text="Reset Config"
                     android:textColor="#d62704" />
             </LinearLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/proactiveHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/configSection">
+
+            <TextView
+                style="@style/HeadingText"
+                android:text="Proactive Outbound"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightSilver" />
+
+            <LinearLayout
+                android:id="@+id/proactiveSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/helpcenterSection">
+                <!-- In-app notification pause controls -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingTop="12dp">
+
+                    <Button
+                        android:id="@+id/buttonApplyInAppNotificationPause"
+                        style="@style/ButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Pause in-app notification" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPauseInAppNotification"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pause in-app notifications"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -431,7 +518,7 @@
             android:layout_marginTop="12dp"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/configSection">
+            app:layout_constraintTop_toBottomOf="@id/proactiveHeading">
 
             <TextView
                 style="@style/HeadingText"
@@ -584,7 +671,6 @@
 
             </LinearLayout>
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/languageHeading"
@@ -837,6 +923,24 @@
                 style="@style/ButtonStyle"
                 android:text="Show All Helpshift Events"
                 android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textSize="11sp"
+                    android:id="@+id/pushTokenText"
+                    android:maxLines="2"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/copyPushToken"
+                    android:text="FetchPushToken"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

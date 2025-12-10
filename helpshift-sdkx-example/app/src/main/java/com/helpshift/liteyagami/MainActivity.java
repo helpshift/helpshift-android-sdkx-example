@@ -2,17 +2,15 @@ package com.helpshift.liteyagami;
 
 import static com.helpshift.liteyagami.config.SampleAppConfig.IS_INSTALL_CALL_DELAYED;
 import static com.helpshift.liteyagami.config.SampleAppConfig.getInstallConfig;
+import static com.helpshift.liteyagami.util.ApplicationUtil.createChannel;
 import static com.helpshift.liteyagami.util.StorageConstants.IDENTITY_TOKEN_KEY;
 import static com.helpshift.liteyagami.util.StorageConstants.LOGIN_DATA_KEY;
 import static com.helpshift.liteyagami.util.StorageConstants.USER_IDENTITIES_KEY;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioAttributes;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,26 +20,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.helpshift.HSDebugLog;
 import com.helpshift.Helpshift;
 import com.helpshift.HelpshiftEvent;
 import com.helpshift.UnsupportedOSVersionException;
-import com.helpshift.core.HSContext;
 import com.helpshift.liteyagami.config.SampleAppConfig;
 import com.helpshift.liteyagami.eventlistener.HSEventsFlowListener;
 import com.helpshift.liteyagami.eventlistener.HelpshiftEventData;
@@ -49,9 +42,11 @@ import com.helpshift.liteyagami.eventlistener.HelpshiftEventsFlow;
 import com.helpshift.liteyagami.storage.AppStorage;
 import com.helpshift.liteyagami.storage.StorageConstants;
 import com.helpshift.liteyagami.user.LoginActivity;
+import com.helpshift.liteyagami.user.UserType;
 import com.helpshift.liteyagami.user.UserWithIdentityActivity;
 import com.helpshift.liteyagami.util.NotificationUtils;
 import com.helpshift.liteyagami.util.StringUtils;
+import com.helpshift.liteyagami.util.UserUtils;
 import com.helpshift.log.HSLogger;
 import com.helpshift.util.ApplicationUtil;
 import com.helpshift.util.JsonUtils;
@@ -74,17 +69,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private String[] languageCodes;
   private boolean shouldIgnoreFirstSelectCall = true;
 
-  private EditText issueTagsEditText, sectionIdEditText, faqIdEditText, languageEditText,
-          breadcrumbEditText, logTagEditText, logMessageEditText,
-          genericConfigKeyEditText, genericConfigValueEditText,
-          firstUserMessageEditText, conversationPrefillTextEditText,
-          cifNameEditText, cifValueEditText;
+  private TextView textUserType;
+  private TextView textUserInformation;
 
-  private CheckBox fullPrivacyCheckBox, fetchFromRemoteCheckBox, initiateChatOnLoad, clearAnonUserCheckbox, showToastLogs;
+  private EditText issueTagsEditText;
+  private EditText sectionIdEditText;
+  private EditText faqIdEditText;
+  private EditText languageEditText;
+  private EditText breadcrumbEditText;
+  private EditText logTagEditText;
+  private EditText logMessageEditText;
+  private EditText genericConfigKeyEditText;
+  private EditText genericConfigValueEditText;
+  private EditText firstUserMessageEditText;
+  private EditText conversationPrefillTextEditText;
+  private EditText cifNameEditText;
+  private EditText cifValueEditText;
 
-  private Spinner languageDropDown, logLevelDropDown, cifTypeSpinner;
+  private CheckBox fullPrivacyCheckBox;
+  private CheckBox fetchFromRemoteCheckBox;
+  private CheckBox initiateChatOnLoad;
+  private CheckBox clearAnonUserCheckbox;
+  private CheckBox pauseInAppNotificationCheckBox;
+  private Spinner logLevelDropDown;
+  private Spinner cifTypeSpinner;
 
-  private HashMap<String, Object> genericConfig = new HashMap<>();
+  private final HashMap<String, Object> genericConfig = new HashMap<>();
   private Map<String, Object> cifs = new HashMap<>();
 
   private final TextWatcher textWatcher = new TextWatcher() {
@@ -104,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
   };
 
+  @SuppressLint("MissingInflatedId")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -124,19 +135,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // Get FCM push token
-    FirebaseInstanceId.getInstance().getInstanceId()
-            .addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
-      @Override
-      public void onSuccess(InstanceIdResult instanceIdResult) {
-        String newToken = instanceIdResult.getToken();
-        storage.storageSet("pushToken", newToken);
-      }
-    });
+    FirebaseMessaging.getInstance().getToken()
+            .addOnSuccessListener(this, newToken -> {
+              String pushToken = storage.storageGet(StorageConstants.PUSH_TOKEN, "");
 
+              if (TextUtils.isEmpty(pushToken) || !pushToken.equals(newToken)) {
+                storage.storageSet(StorageConstants.PUSH_TOKEN, newToken);
+                Helpshift.registerPushToken(newToken);
+              }
+            });
 
     //creating notification channel
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      createChannel();
+      createChannel(this, SampleAppConfig.CHANNEL_ID, R.raw.custom_notification, "Lite SDK Channel");
+      createChannel(this, SampleAppConfig.PRO_ACTIVE_ENGAGEMENT_CHANNEL_ID, R.raw.proactive_channel_sound, "Proactive Engagement Notifications Channel");
+      createChannel(this, SampleAppConfig.PRO_ACTIVE_SUPPORT_CHANNEL_ID, R.raw.proactive_channel_sound, "Proactive Support Notifications Channel");
     }
 
     findViewById(R.id.open_helpshift).setOnClickListener(this);
@@ -158,6 +171,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.addCif).setOnClickListener(this);
     findViewById(R.id.showHelpshiftEvents).setOnClickListener(this);
     findViewById(R.id.clearAnonUser).setOnClickListener(this);
+    findViewById(R.id.copyPushToken).setOnClickListener(this);
+    findViewById(R.id.retryUserInformation).setOnClickListener(this);
+    findViewById(R.id.buttonApplyInAppNotificationPause).setOnClickListener(this);
+
+    textUserType = findViewById(R.id.textAppUserType);
+    textUserInformation = findViewById(R.id.textAppUserInformation);
+
+    EditText pushTokenText = findViewById(R.id.pushTokenText);
+    pushTokenText.setText(storage.storageGet(StorageConstants.PUSH_TOKEN, "Not available"));
 
     clearAnonUserCheckbox = findViewById(R.id.clearAnonUserCheckBox);
     breadcrumbEditText = findViewById(R.id.breadCrumbEditText);
@@ -182,43 +204,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     fullPrivacyCheckBox = findViewById(R.id.fullPrivacyCheck);
     fullPrivacyCheckBox.setChecked(storage.storageGetBoolean(StorageConstants.KEY_ENABLE_FULL_PRIVACY));
-    fullPrivacyCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        storage.storageSet(StorageConstants.KEY_ENABLE_FULL_PRIVACY, isChecked);
-        updateConfigOnUI();
-      }
+    fullPrivacyCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      storage.storageSet(StorageConstants.KEY_ENABLE_FULL_PRIVACY, isChecked);
+      updateConfigOnUI();
     });
 
     initiateChatOnLoad = findViewById(R.id.initiateChatOnLoad);
     initiateChatOnLoad.setChecked(storage.storageGetBoolean(StorageConstants.INITIATE_CHAT_ON_LOAD,
             false));
-    initiateChatOnLoad.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        storage.storageSet(StorageConstants.INITIATE_CHAT_ON_LOAD, isChecked);
-        updateConfigOnUI();
-      }
+    initiateChatOnLoad.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      storage.storageSet(StorageConstants.INITIATE_CHAT_ON_LOAD, isChecked);
+      updateConfigOnUI();
     });
 
-    showToastLogs = findViewById(R.id.showToastMessage);
-    showToastLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        storage.storageSet(StorageConstants.SHOW_TOAST_MESSAGE, isChecked);
-      }
-    });
-    showToastLogs.setChecked(storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE,
-            true));
+    pauseInAppNotificationCheckBox = findViewById(R.id.checkboxPauseInAppNotification);
 
     fetchFromRemoteCheckBox = findViewById(R.id.fromRemote);
     fetchFromRemoteCheckBox.setChecked(storage.storageGetBoolean(StorageConstants.KEY_FROM_REMOTE));
-    fetchFromRemoteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        storage.storageSet(StorageConstants.KEY_FROM_REMOTE, isChecked);
-      }
-    });
+    fetchFromRemoteCheckBox.setOnCheckedChangeListener(
+        (buttonView, isChecked) -> storage.storageSet(StorageConstants.KEY_FROM_REMOTE, isChecked));
 
     sectionIdEditText = findViewById(R.id.sectionIdText);
     sectionIdEditText.setText(storage.storageGet(StorageConstants.SECTION_ID));
@@ -359,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       }
     }
 
-    languageDropDown = findViewById(R.id.languageDropDown);
+    Spinner languageDropDown = findViewById(R.id.languageDropDown);
     if (languagePosition != -1) {
       languageDropDown.setSelection(languagePosition);
     }
@@ -390,7 +394,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     HelpshiftEventsFlow.setHelpshiftEventFlowListener(this);
 
     TextView appLevelLang = findViewById(R.id.appLevelLanguage);
-    appLevelLang.setText(HSContext.getInstance().getDevice().getLanguage());
+    appLevelLang.setText(ApplicationUtil.getLanguage(this.getApplicationContext()));
+    UserUtils.setUserInformation(textUserType, textUserInformation);
   }
 
   @Override
@@ -409,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
   }
 
+  @SuppressLint("NonConstantResourceId")
   @Override
   public void onClick(View v) {
     Map<String, Object> config = new HashMap<>();
@@ -439,6 +445,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         break;
       case R.id.logout:
         logoutUser();
+        UserUtils.setUserInformation(textUserType, textUserInformation);
         break;
       case R.id.user_identity_button:
         startUserIdentityActivity();
@@ -492,13 +499,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String toast = clearAnonUserCheckbox.isChecked() ? "Anonymous User cleared" : "Anonymous User will be retained";
         Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
         break;
+      case R.id.copyPushToken:
+        copyPushToken();
+        break;
+      case R.id.retryUserInformation:
+        UserUtils.setUserInformation(textUserType, textUserInformation);
+        break;
+      case R.id.buttonApplyInAppNotificationPause:
+        applyPauseInAppNotificationSetting();
+        break;
       default:
         break;
     }
   }
 
+  private void applyPauseInAppNotificationSetting() {
+      boolean shouldPause = pauseInAppNotificationCheckBox != null && pauseInAppNotificationCheckBox.isChecked();
+      Helpshift.shouldPauseInAppNotification(shouldPause);
+
+      String stateText = shouldPause ? "In-app notifications paused" : "In-app notifications enabled";
+      Toast.makeText(MainActivity.this, stateText, Toast.LENGTH_SHORT).show();
+  }
+
+  private void copyPushToken() {
+    String pushToken = storage.storageGet(StorageConstants.PUSH_TOKEN, "Not available");
+    EditText pushTokenView = findViewById(R.id.pushTokenText);
+    pushTokenView.setText(pushToken);
+    com.helpshift.liteyagami.util.ApplicationUtil.copyToClipboard(this, pushToken);
+  }
+
   private void logoutUser() {
     Helpshift.logout();
+    UserUtils.storeUserInformation(UserType.ANONYMOUS_USER, new HashMap<>());
     storage.storageSet(USER_IDENTITIES_KEY, "");
     storage.storageSet(IDENTITY_TOKEN_KEY, "");
     storage.storageSet(LOGIN_DATA_KEY, "");
@@ -546,9 +578,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private void handleCIFAddition() {
     String cifType = cifTypeSpinner.getSelectedItem().toString();
     if ("Type...".equalsIgnoreCase(cifType)) {
-      if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-        Toast.makeText(this, "Select valid CIF type", Toast.LENGTH_SHORT).show();
-      }
+      Toast.makeText(this, "Select valid CIF type", Toast.LENGTH_SHORT).show();
       return;
     }
 
@@ -560,9 +590,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cifValue = Long.parseLong((String) cifValue);
       }
     } catch (Exception e) {
-      if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-        Toast.makeText(this, "Invalid value for date type CIF", Toast.LENGTH_SHORT).show();
-      }
+      Toast.makeText(this, "Invalid value for date type CIF", Toast.LENGTH_SHORT).show();
       return;
     }
 
@@ -595,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     String conversationPrefillText = conversationPrefillTextEditText.getText().toString();
     storage.storageSet(StorageConstants.CONVERSATION_PREFILL_TEXT, conversationPrefillText);
-    
+
     explicitConfig.put("initiateChatOnLoad", initiateChatOnLoading);
     explicitConfig.put("fullPrivacy", fullPrivacy);
 
@@ -659,9 +687,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String genericConfigValue = genericConfigValueEditText.getText().toString();
 
     if(TextUtils.isEmpty(genericConfigKey) || TextUtils.isEmpty(genericConfigValue)) {
-      if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-        Toast.makeText(this, "Key or value is empty!", Toast.LENGTH_SHORT).show();
-      }
+      Toast.makeText(this, "Key or value is empty!", Toast.LENGTH_SHORT).show();
       return;
     }
 
@@ -694,9 +720,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     persistCIFMap(cifs);
 
     resetExplicitConfigOnUI();
-    if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-      Toast.makeText(this, "Custom config cleared", Toast.LENGTH_LONG).show();
-    }
+    Toast.makeText(this, "Custom config cleared", Toast.LENGTH_LONG).show();
   }
 
   private void handleLeaveBreadcrumb(String crumb) {
@@ -717,9 +741,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private void handleNotificationPermissionClick() {
     if (ContextCompat.checkSelfPermission(
             this, "android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED) {
-      if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-        Toast.makeText(this, "Permission already granted!", Toast.LENGTH_SHORT).show();
-      }
+      Toast.makeText(this, "Permission already granted!", Toast.LENGTH_SHORT).show();
     } else {
       // You can directly ask for the permission.
       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
@@ -727,28 +749,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new String[]{"android.permission.POST_NOTIFICATIONS"},
                 12);
       } else {
-        if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-          Toast.makeText(this, "Not required!", Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(this, "Not required!", Toast.LENGTH_SHORT).show();
       }
     }
   }
 
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    if (requestCode == 12) {
-      if (grantResults.length > 0 &&
-              grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-          Toast.makeText(this, "Permission granted!", Toast.LENGTH_SHORT).show();
-        }
-      }
+    if (requestCode == 12 && grantResults.length > 0 &&
+        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+      Toast.makeText(this, "Permission granted!", Toast.LENGTH_SHORT).show();
     }
   }
 
   private String[] getTagsForConfig(String tags){
-    String[] tagsArray = tags.split(",");
-    return tagsArray;
+    return tags.split(",");
   }
 
   private void startLoginActivity() {
@@ -759,38 +774,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private void startUserIdentityActivity() {
     Intent userIdentityIntent = new Intent(this, UserWithIdentityActivity.class);
     startActivity(userIdentityIntent);
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private void createChannel() {
-    String id = SampleAppConfig.CHANNEL_ID;
-    NotificationManager notificationManager = ApplicationUtil.getNotificationManager(this);
-    if (notificationManager != null) {
-      NotificationChannel notificationChannel = notificationManager.getNotificationChannel(id);
-      //Notification channel not exist so create new one
-      if (notificationChannel == null) {
-        String name = SampleAppConfig.CHANNEL_ID;
-        String description = "TESTING CHANNEL";
-        //Create the channel with default ID
-        NotificationChannel mChannel = new NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT);
-        mChannel.setDescription(description);
-
-        Uri soundUri = getNotificationSoundUri(this, R.raw.custom_notification);
-        if (soundUri != null) {
-          mChannel.setSound(soundUri, new AudioAttributes.Builder().build());
-        }
-        notificationManager.createNotificationChannel(mChannel);
-      }
-    }
-  }
-
-  public static Uri getNotificationSoundUri(Context context, int notificationSoundId) {
-    Uri soundUri = null;
-    if (notificationSoundId != 0) {
-      String soundUriString = "android.resource://" + context.getPackageName() + "/" + notificationSoundId;
-      soundUri = Uri.parse(soundUriString);
-    }
-    return soundUri;
   }
 
   private void updateConfigOnUI() {
@@ -834,9 +817,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String eventName = helpshiftEventData.getEventName();
     Map<String, Object> data = helpshiftEventData.getData();
 
-    if (storage.storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-      Toast.makeText(MainActivity.this, eventName + " " + data.toString(), Toast.LENGTH_SHORT).show();
-    }
+    Toast.makeText(MainActivity.this, eventName + " " + data.toString(), Toast.LENGTH_SHORT).show();
     Log.d(TAG, "eventName: " + eventName + " " + Utils.prettyFormatHashMap(data, 0));
 
     if (HelpshiftEvent.RECEIVED_UNREAD_MESSAGE_COUNT.equals(eventName)) {

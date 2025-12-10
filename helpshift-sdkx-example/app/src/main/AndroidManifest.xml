@@ -13,6 +13,11 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Helpshift.SDK.Demo.Theme">
+        <activity
+            android:name=".proactive_engagement.ProactiveEngagementActivity"
+            android:label="Proactive Engagement"
+            android:theme="@style/Helpshift.SDK.Demo.Theme"
+            android:exported="false" />
         <activity android:name="com.helpshift.liteyagami.SampleNotificationActivity"
             android:exported="false"/>
         <activity android:name="com.helpshift.liteyagami.deeplink.DeepLinkActivity"
@@ -22,15 +27,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="myscheme" android:host="example.com" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.helpshift.liteyagami.proactive.ProactiveDeepLinkActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="myscheme" android:host="helpshift.com" />
             </intent-filter>
         </activity>
         <activity android:name="com.helpshift.liteyagami.MainActivity"
@@ -46,25 +42,13 @@
         <activity
             android:name="com.helpshift.liteyagami.user.LoginActivity"
             android:label="Login"
-            android:theme="@style/Helpshift.SDK.Demo.Theme"
-            android:parentActivityName="com.helpshift.liteyagami.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.helpshift.liteyagami.MainActivity" />
+            android:theme="@style/Helpshift.SDK.Demo.Theme">
         </activity>
         <activity
             android:name="com.helpshift.liteyagami.user.UserWithIdentityActivity"
             android:label="User Identity"
-            android:theme="@style/Helpshift.SDK.Demo.Theme"
-            android:parentActivityName="com.helpshift.liteyagami.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.helpshift.liteyagami.MainActivity" />
+            android:theme="@style/Helpshift.SDK.Demo.Theme">
         </activity>
-        <activity android:name="com.helpshift.liteyagami.proactive.ProactiveNotificationActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName="com.helpshift.liteyagami.MainActivity" />
-
         <service
             android:name="com.helpshift.liteyagami.firebase.MyFirebaseMessagingService"
             android:exported="false">

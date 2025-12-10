@@ -1,4 +1,4 @@
-package com.helpshift.liteyagami.proactive;
+package com.helpshift.liteyagami.proactive_engagement;
 
 import static com.helpshift.liteyagami.config.SampleAppConfig.getStoredCIFAsConfig;
 
@@ -20,5 +20,4 @@ public class ProactiveLocalAPIConfigProvider implements HelpshiftProactiveAPICon
         localConfig.put("tags", new String[]{"localConfig", "paid", "renewal", "vip", "level"});
         return localConfig;
     }
-
 }

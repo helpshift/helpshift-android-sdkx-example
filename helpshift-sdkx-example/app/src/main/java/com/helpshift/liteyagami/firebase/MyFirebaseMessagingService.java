@@ -1,74 +1,64 @@
 package com.helpshift.liteyagami.firebase;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.helpshift.Helpshift;
-import com.helpshift.liteyagami.config.SampleAppConfig;
-import com.helpshift.liteyagami.util.NotificationUtils;
-import com.helpshift.liteyagami.proactive.ProactiveNotificationActivity;
+import com.helpshift.liteyagami.InstanceProvider;
+import com.helpshift.liteyagami.NotificationRepository;
+import com.helpshift.liteyagami.storage.AppStorage;
+import com.helpshift.liteyagami.storage.StorageConstants;
 import com.helpshift.log.HSLogger;
-import com.helpshift.util.Utils;
 
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-  private static final String TAG = "HelpshiftSDK_Push";
+    private static final String TAG = "HelpshiftSDK_Push";
+    NotificationRepository repository;
 
-  @Override
-  public void onMessageReceived(RemoteMessage remoteMessage) {
-    Map<String, String> data = remoteMessage.getData();
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        Map<String, String> data = remoteMessage.getData();
+        repository = InstanceProvider.getInstance().getNotificationRepository();
 
-    // Handling push notification from Helpshift.
-    // This handling is for notifications sent from Helpshift when agent replies to an issue from Helpshift dashboard.
-    String origin = data.get("origin");
-    if (origin != null && origin.equals("helpshift")) {
-      Helpshift.handlePush(data);
+        // Handling push notification from Helpshift.
+        // This handling is for notifications sent from Helpshift when agent replies to an issue from Helpshift dashboard.
+        String origin = data.get("origin");
+        if (origin != null && origin.equals("helpshift")) {
+            Helpshift.handlePush(data);
+        }
+
+        //Adding current time in copy of data to show Push Notifications
+        //Note : data is modified by adding time
+        HSLogger.d(TAG, "Payload from push notification. \n" + data);
+        addTime(data);
+        repository.addPayload(new JSONObject(data));
     }
 
-    // Handle notifications sent from client app's backend when sending proactive outbound notifications.
-    // This notification does not originate from Helpshift's backend.
-    // Example:
-    // Payload from push notification, i.e data, contains proactive url (generated from Helpshift dashboard)
-    // in the key "helpshift_proactive_link"
-    generateProactiveNotification(data);
-  }
+    @Override
+    public void onNewToken(String newToken) {
+        HSLogger.d(TAG, "Push token received: " + newToken);
 
-  @Override
-  public void onNewToken(String newToken) {
-    HSLogger.d(TAG, "Push token received: " + newToken);
+        AppStorage appStorage = InstanceProvider.getInstance().getAppStorage();
+        String pushToken = appStorage.storageGet(StorageConstants.PUSH_TOKEN, "");
 
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    String pushToken = sharedPreferences.getString("push_token", "");
-
-    if (TextUtils.isEmpty(pushToken) || !pushToken.equals(newToken)) {
-      sharedPreferences.edit().putString("push_token", newToken).apply();
-      Helpshift.registerPushToken(newToken);
-    }
-  }
-
-  private void generateProactiveNotification(Map<String, String> data) {
-    String proactiveUrl = data.get("helpshift_proactive_link");
-
-    if (Utils.isEmpty(proactiveUrl)) {
-      Log.i(TAG, "Push notification does not contain Proactive Outbound url");
-      return;
+        if (TextUtils.isEmpty(pushToken) || !pushToken.equals(newToken)) {
+            appStorage.storageSet(StorageConstants.PUSH_TOKEN, newToken);
+            Helpshift.registerPushToken(newToken);
+        }
     }
 
-    Context context = getApplicationContext();
 
-    Intent intent = new Intent(context, ProactiveNotificationActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.putExtra("proactiveNotification", true);
-    intent.putExtra("proactiveLink", proactiveUrl);
-
-    NotificationUtils.showNotification(context,intent,SampleAppConfig.CHANNEL_ID, NotificationUtils.NOTIFICATION_ID,data.get("title"),data.get("message"), com.helpshift.R.drawable.hs__chat_icon,true);
-  }
+    void addTime(Map<String, String> obj) {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
+        obj.put("time", sdf.format(new Date()));
+    }
 }

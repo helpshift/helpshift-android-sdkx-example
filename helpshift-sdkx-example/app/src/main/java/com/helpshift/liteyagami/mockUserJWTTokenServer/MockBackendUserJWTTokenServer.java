@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.helpshift.util.JsonUtils;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -20,7 +20,6 @@ public class MockBackendUserJWTTokenServer {
 
   private static final String TAG = "MckBckndUsrJWTSrvr";
   private static String secretKey;
-  private static Date iatDate;
 
   private MockBackendUserJWTTokenServer() {
     // empty
@@ -35,15 +34,7 @@ public class MockBackendUserJWTTokenServer {
     secretKey = secret;
   }
 
-  /**
-   * In case we change iat date from demo app then update here
-   * @param date
-   */
-  public static void setIATDate(Date date) {
-    iatDate = date;
-  }
-
-  public static String generateJWTForUser(String userIdentityJSON) {
+  public static String generateJWTForUser(String userIdentityJSON, Calendar calendarInstance) {
     try {
       if (isEmpty(userIdentityJSON)) {
         Log.d(TAG, "No identities added.");
@@ -58,16 +49,15 @@ public class MockBackendUserJWTTokenServer {
        */
 
       // IAT date should be within 24 hrs of current time. If not set, then set it now.
-      if (iatDate == null) {
-        Date date = new Date();
-        date.setTime(System.currentTimeMillis() - 60 * 60 * 1000);
-        iatDate = date;
+      if (calendarInstance == null) {
+        calendarInstance = Calendar.getInstance();
+        calendarInstance.setTimeInMillis(System.currentTimeMillis() - 60 * 60 * 1000);
       }
 
       SecretKey hashedSecretKey = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
       Header jwtHeader = Jwts.header().add("alg", "HS256").add("typ", "JWT").build();
       String identityJWTToken = Jwts.builder().header().add(jwtHeader).and().claims(identities).
-                                    issuedAt(iatDate).signWith(hashedSecretKey, HS256).compact();
+                                    issuedAt(calendarInstance.getTime()).signWith(hashedSecretKey, HS256).compact();
 
       Log.d(TAG, "identity JWT Token: " + identityJWTToken);
       return identityJWTToken;

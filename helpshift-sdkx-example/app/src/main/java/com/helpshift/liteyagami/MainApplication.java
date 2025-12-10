@@ -1,6 +1,7 @@
 package com.helpshift.liteyagami;
 
 import static com.helpshift.liteyagami.config.SampleAppConfig.getInstallConfig;
+import static com.helpshift.liteyagami.config.SampleAppConfig.getProactivePushNotificationDefaults;
 
 import android.app.Application;
 import android.os.Build;
@@ -12,7 +13,7 @@ import com.helpshift.UnsupportedOSVersionException;
 import com.helpshift.liteyagami.config.SampleAppConfig;
 import com.helpshift.liteyagami.eventlistener.EventsListener;
 import com.helpshift.liteyagami.eventlistener.HelpshiftEventsFlow;
-import com.helpshift.liteyagami.proactive.ProactiveLocalAPIConfigProvider;
+import com.helpshift.liteyagami.proactive_engagement.ProactiveLocalAPIConfigProvider;
 
 public class MainApplication extends Application {
 
@@ -41,9 +42,10 @@ public class MainApplication extends Application {
         Log.e("MainApp", "install() called on the OS version: " + Build.VERSION.SDK_INT + " is not supported");
       }
     }
+
     HelpshiftEventsFlow.initInstance();
     Helpshift.setHelpshiftEventsListener(new EventsListener());
-
+    Helpshift.setProactivePushNotificationDefaults(getProactivePushNotificationDefaults());
     // Set listener to collect local config when handling Proactive Outbound support links.
     Helpshift.setHelpshiftProactiveConfigCollector(new ProactiveLocalAPIConfigProvider());
   }

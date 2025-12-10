@@ -3,6 +3,8 @@ package com.helpshift.liteyagami.mockUserAuthServer;
 import android.util.Base64;
 import android.util.Log;
 
+import java.nio.charset.StandardCharsets;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -36,10 +38,10 @@ public class MockBackendUserVerificationTokenServer {
         }
 
         try {
-            SecretKeySpec secretKey = new SecretKeySpec(appSecretKey.getBytes("UTF-8"), "HmacSHA256");
+            SecretKeySpec secretKey = new SecretKeySpec(appSecretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(secretKey);
-            byte[] hmacData = mac.doFinal(parameter.getBytes("UTF-8"));
+            byte[] hmacData = mac.doFinal(parameter.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeToString(hmacData, Base64.NO_WRAP);
         }
         catch (Exception e) {

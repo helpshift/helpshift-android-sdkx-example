@@ -9,7 +9,7 @@ import com.helpshift.Helpshift;
 
 public class SampleNotificationActivity extends AppCompatActivity {
 
-    public static String EXTRA_CLOSE_SUPPORT_SESSION = "closeSupportSession";
+    public static final String EXTRA_CLOSE_SUPPORT_SESSION = "closeSupportSession";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
