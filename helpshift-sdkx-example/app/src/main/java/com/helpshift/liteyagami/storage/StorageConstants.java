@@ -18,6 +18,7 @@ public class StorageConstants {
     public static final String FIRST_USER_MESSAGE = "firstUserMessage";
     public static final String CONVERSATION_PREFILL_TEXT = "conversationPrefillText";
     public static final String KEY_CIFS = "cifs";
-    public static final String SHOW_TOAST_MESSAGE = "showToastMessage";
+    public static final String PUSH_TOKEN = "push_token";
+    public static final String PUSH_PAYLOAD_KEY = "payload_push_notification";
 
 }

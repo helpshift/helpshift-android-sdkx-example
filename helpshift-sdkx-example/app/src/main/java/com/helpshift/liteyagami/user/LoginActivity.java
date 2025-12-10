@@ -2,26 +2,24 @@ package com.helpshift.liteyagami.user;
 
 import static com.helpshift.liteyagami.mockUserAuthServer.MockBackendUserVerificationTokenServer.generateHMAC;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.helpshift.Helpshift;
-import com.helpshift.liteyagami.InstanceProvider;
-import com.helpshift.liteyagami.MainActivity;
 import com.helpshift.liteyagami.R;
-import com.helpshift.liteyagami.storage.StorageConstants;
+import com.helpshift.liteyagami.util.UserUtils;
 import com.helpshift.util.Utils;
 
 import java.util.HashMap;
@@ -29,7 +27,10 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText userName,userId,userEmailId,userSecretKey;
+    EditText userName;
+    EditText userId;
+    EditText userEmailId;
+    EditText userSecretKey;
     CheckBox enableAuthentication;
 
     @Override
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.login_activity);
         getSupportActionBar().setTitle("Login");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         userName = findViewById(R.id.userNameTextView);
         userId = findViewById(R.id.userIdTextView);
@@ -60,65 +62,60 @@ public class LoginActivity extends AppCompatActivity {
 
         secretKeyInfoText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        enableAuthentication.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                userAuthTokenInfo.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            }
-        });
+        enableAuthentication.setOnCheckedChangeListener(
+            (buttonView, isChecked) -> userAuthTokenInfo.setVisibility(isChecked ? View.VISIBLE : View.GONE));
 
         userAuthTokenInfo.setVisibility(enableAuthentication.isChecked() ? View.VISIBLE : View.GONE);
 
         Button generateToken = findViewById(R.id.generateToken);
-        generateToken.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (enableAuthentication.isChecked()) {
-                    String id = userId.getText().toString();
-                    String email = userEmailId.getText().toString();
-                    String secretKey = userSecretKey.getText().toString();
-                    TextView userAuthTokenTextView = findViewById(R.id.userAuthTokenText);
+        generateToken.setOnClickListener(v -> {
+            if (enableAuthentication.isChecked()) {
+                String id = userId.getText().toString();
+                String email = userEmailId.getText().toString();
+                String secretKey = userSecretKey.getText().toString();
+                TextView userAuthTokenTextView = findViewById(R.id.userAuthTokenText);
 
-                    String token = generateHMAC(id, email, secretKey);
-                    if (Utils.isEmpty(token)) {
-                        if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-                            Toast.makeText(LoginActivity.this,
-                                    "Error generating auth token. Check logs.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    userAuthTokenTextView.setText(token);
+                String token = generateHMAC(id, email, secretKey);
+                if (Utils.isEmpty(token)) {
+                    Toast.makeText(LoginActivity.this,
+                            "Error generating auth token. Check logs.",
+                            Toast.LENGTH_SHORT).show();
                 }
+
+                userAuthTokenTextView.setText(token);
             }
         });
 
         Button saveLogin = findViewById(R.id.saveLoginBtn);
-        saveLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = userName.getText().toString();
-                String email = userEmailId.getText().toString();
-                String id = userId.getText().toString();
-                String secretKey = userSecretKey.getText().toString();
+        saveLogin.setOnClickListener(view -> {
+            String name = userName.getText().toString();
+            String email = userEmailId.getText().toString();
+            String id = userId.getText().toString();
+            String secretKey = userSecretKey.getText().toString();
 
-                boolean loginSuccess = Helpshift.login(generateLoginData(id, name, email, secretKey));
+            Map<String, String> loginData = generateLoginData(id, name, email, secretKey);
+            boolean loginSuccess = Helpshift.login(loginData);
 
-                if (loginSuccess) {
-                    if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-                        Toast.makeText(LoginActivity.this, "Logged in:" + userName, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    if (InstanceProvider.getInstance().getAppStorage().storageGetBoolean(StorageConstants.SHOW_TOAST_MESSAGE)) {
-                        Toast.makeText(LoginActivity.this, "Error in Login: Check logs", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-
+            if (loginSuccess) {
+                UserUtils.storeUserInformation(UserType.OLD_LOGIN_USER, loginData);
+                Toast.makeText(LoginActivity.this, "Logged in:" + userName, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(LoginActivity.this, "Error in Login: Check logs", Toast.LENGTH_SHORT).show();
             }
+
+            onBackPressed();
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home){
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public Map<String,String> generateLoginData(final String id, final String name, final String email, final String secretKey) {

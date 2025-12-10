@@ -7,6 +7,7 @@ public class InstanceProvider {
     private static InstanceProvider instance;
     private static MainApplication mainApplication;
     private static AppStorage appStorage;
+    private static NotificationRepository notificationRepository;
 
     public static synchronized void initInstance(MainApplication application) {
         if (instance == null) {
@@ -14,6 +15,7 @@ public class InstanceProvider {
         }
         mainApplication = application;
         appStorage = new AppStorage(application);
+        notificationRepository = new NotificationRepository(appStorage);
     }
 
     public static InstanceProvider getInstance() {
@@ -27,4 +29,9 @@ public class InstanceProvider {
     public AppStorage getAppStorage() {
         return appStorage;
     }
+
+    public NotificationRepository getNotificationRepository() {
+        return notificationRepository;
+    }
+
 }

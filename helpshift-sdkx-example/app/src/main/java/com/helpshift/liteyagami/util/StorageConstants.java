@@ -11,4 +11,6 @@ public class StorageConstants {
   public static final String LOGIN_DATA_KEY = "loginData";
 
   public static final String JWT_SECRET_KEY = "userIdSecretKey";
+
+  public static String CURRENT_USER = "CURRENT_USER";
 }

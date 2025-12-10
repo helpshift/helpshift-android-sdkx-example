@@ -1,32 +1,30 @@
 package com.helpshift.liteyagami.user;
 
+import static com.helpshift.liteyagami.user.UserType.USER_WITH_IDENTITY;
 import static com.helpshift.liteyagami.util.StorageConstants.IDENTITY_TOKEN_KEY;
-import static com.helpshift.liteyagami.util.StorageConstants.LOGIN_DATA_KEY;
 import static com.helpshift.liteyagami.util.StorageConstants.JWT_SECRET_KEY;
+import static com.helpshift.liteyagami.util.StorageConstants.LOGIN_DATA_KEY;
 import static com.helpshift.liteyagami.util.StorageConstants.USER_IDENTITIES_KEY;
 import static com.helpshift.util.Utils.isEmpty;
 
 import android.app.DatePickerDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,43 +37,62 @@ import com.helpshift.liteyagami.eventlistener.HelpshiftEventData;
 import com.helpshift.liteyagami.eventlistener.HelpshiftEventsFlow;
 import com.helpshift.liteyagami.mockUserJWTTokenServer.MockBackendUserJWTTokenServer;
 import com.helpshift.liteyagami.storage.AppStorage;
+import com.helpshift.liteyagami.util.ApplicationUtil;
 import com.helpshift.liteyagami.util.StringUtils;
+import com.helpshift.liteyagami.util.UserUtils;
 import com.helpshift.log.HSLogger;
 import com.helpshift.util.JsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class UserWithIdentityActivity extends AppCompatActivity implements View.OnClickListener, HSEventsFlowListener {
 
     private static final String TAG = "UserIdentityActivity";
 
-    EditText identifierKeyEditText, identifierValueEditText, valueKeyEditText, identityValueEditText,
-            metaDataKeyEditText, metaDataValueEditText, userIdentitySecretKey, loginDataKeyEditText,
-            loginDataValueEditText, iatEditText, clipboardIdentityToken, masterAttributeKeyEditText,
-            masterAttibuteValueEditText, masterAttributeCUFKey, masterAttributeCUFValue,
-            appAttributeKeyEditText, appAttibuteValueEditText, appAttributeCUFKey, appAttributeCUFValue;
+    EditText identifierKeyEditText;
+    EditText identifierValueEditText;
+    EditText valueKeyEditText;
+    EditText identityValueEditText;
+    EditText metaDataKeyEditText;
+    EditText metaDataValueEditText;
+    EditText userIdentitySecretKey;
+    EditText loginDataKeyEditText;
+    EditText loginDataValueEditText;
+    EditText iatEditText;
+    EditText clipboardIdentityToken;
+    EditText masterAttributeKeyEditText;
+    EditText masterAttibuteValueEditText;
+    EditText masterAttributeCUFKey;
+    EditText masterAttributeCUFValue;
+    EditText appAttributeKeyEditText;
+    EditText appAttibuteValueEditText;
+    EditText appAttributeCUFKey;
+    EditText appAttributeCUFValue;
 
 
     RadioGroup identityRadioGroup;
+    RadioButton manualIdentityRadioButton;
+    RadioButton clipboardIdentityRadioButton;
 
-    RadioButton manualIdentityRadioButton, clipboardIdentityRadioButton;
+    TextView identitiesText;
+    TextView loginDataPreview;
+    TextView loginResponse;
+    TextView iatValueTextView;
+    TextView masterAttributePreview;
+    TextView appAttributePreview;
+    TextView helpshiftEventsFlowTextView;
 
-    TextView identitiesText, loginDataPreview, loginResponse, iatValueTextView,
-            masterAttributePreview, appAttributePreview, helpshiftEventsFlowTextView;
+    LinearLayout clipboardIdentitySection;
+    LinearLayout manualIdentitySection;
 
-    LinearLayout clipboardIdentitySection, manualIdentitySection;
-
-    private Date iatDate = new Date();
+    private Calendar iatDate = Calendar.getInstance();
 
     private final HashMap<String, Object> userIdentities = new HashMap<>();
     List<Map<String, Object>> identitiesList = new ArrayList<>();
@@ -96,6 +113,7 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
 
         setContentView(R.layout.activity_user_identity);
         getSupportActionBar().setTitle("User Identity Login");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         appStorage = InstanceProvider.getInstance().getAppStorage();
 
@@ -154,10 +172,10 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
         manualIdentitySection = findViewById(R.id.manualIdentitySection);
         clipboardIdentitySection = findViewById(R.id.clipboardIdentitySection);
     }
+
     private void setupIatDate() {
-        iatDate.setTime(System.currentTimeMillis() - 60 * 60 * 1000);
-        iatValueTextView.setText(iatDate.getDate() + "-" + (iatDate.getMonth() + 1) + "-" + (iatDate.getYear() + 1900));
-        MockBackendUserJWTTokenServer.setIATDate(iatDate);
+        iatDate.setTimeInMillis(System.currentTimeMillis() - 60 * 60 * 1000);
+        iatValueTextView.setText(getTextDateFromCalendar(iatDate));
     }
 
     private void setupClickListeners(UserWithIdentityActivity context) {
@@ -179,12 +197,12 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
         userIdentitySecretKey.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                // Ignore
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                // Ignore
             }
 
             @Override
@@ -193,6 +211,17 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
                 MockBackendUserJWTTokenServer.initSecretKey(s.toString());
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home){
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -338,13 +367,21 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
             @Override
             public void onLoginSuccess() {
                 storeIdentitiesToStorage(token);
+
+                Map<String, Object> userLoginData = new HashMap<>(loginData);
+                userLoginData.put("token", token);
+                String userType = isEmpty(token) ? UserType.ANONYMOUS_USER_WITH_IDENTITY : USER_WITH_IDENTITY;
+
+                UserUtils.storeUserInformation(userType, userLoginData);
+
                 loginResponse.setText("User login with identity successful");
                 loginResponse.setTextColor(Color.GREEN);
             }
 
             @Override
             public void onLoginFailure(String userLoginFailureReason, Map<String, String> map) {
-                loginResponse.setText("Login with identity failed, reason: " + userLoginFailureReason + " data: " + map);
+                String responseTxt = "Login with identity failed, reason: " + userLoginFailureReason + " data: " + map;
+                loginResponse.setText(responseTxt);
                 loginResponse.setTextColor(Color.RED);
             }
         });
@@ -373,34 +410,32 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
     }
 
     private void setupRadioGroupListener() {
-        identityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                manualIdentitySection.setVisibility(checkedId == R.id.manualIdentityRadioButton ? View.VISIBLE : View.GONE);
-                clipboardIdentitySection.setVisibility(checkedId == R.id.clipboardIdentityRadioButton ? View.VISIBLE : View.GONE);
-            }
+        identityRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            manualIdentitySection.setVisibility(checkedId == R.id.manualIdentityRadioButton ? View.VISIBLE : View.GONE);
+            clipboardIdentitySection.setVisibility(checkedId == R.id.clipboardIdentityRadioButton ? View.VISIBLE : View.GONE);
         });
     }
 
 
     private void showDatePicker() {
         final Calendar c = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(UserWithIdentityActivity.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                String selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-                try {
-                    iatDate = simpleDateFormat.parse(selectedDate);
-                    iatValueTextView.setText(selectedDate);
-                    MockBackendUserJWTTokenServer.setIATDate(iatDate);
-                } catch (Exception e) {
-                    HSLogger.e(TAG, "Failed to parse date", e);
-                    iatDate = new Date();
-                }
-            }
-        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        DatePickerDialog datePickerDialog = new DatePickerDialog(UserWithIdentityActivity.this,
+                                                                 (view, year, monthOfYear, dayOfMonth) -> {
+                                                                     try {
+                                                                         iatDate.set(year, monthOfYear, dayOfMonth);
+                                                                         iatValueTextView.setText(getTextDateFromCalendar(iatDate));
+                                                                     } catch (Exception e) {
+                                                                         HSLogger.e(TAG, "Failed to parse date", e);
+                                                                         iatDate = Calendar.getInstance();
+                                                                         iatDate.setTimeInMillis(System.currentTimeMillis() - 60 * 60 * 1000);
+                                                                     }
+                                                                 }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
+    }
+
+    private String getTextDateFromCalendar(Calendar calendar) {
+        return calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-"
+               + calendar.get(Calendar.YEAR);
     }
 
     private void copyTokenToClipboard() {
@@ -409,12 +444,8 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
             Log.d(TAG, "No Identity Added or Pasted");
             return;
         }
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("label", currentToken);
-        if (clipboard != null) {
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-        }
+
+        ApplicationUtil.copyToClipboard(this, currentToken);
     }
 
     private void resetIdentities() {
@@ -488,7 +519,7 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
         try {
             String userIdentitiesJson = JsonUtils.mapToJsonString(userIdentities);
             JSONObject userIdentitiesObject = new JSONObject(userIdentitiesJson);
-            userIdentitiesObject.put("iat", iatDate.getTime() / 1000);
+            userIdentitiesObject.put("iat", iatDate.getTimeInMillis() / 1000);
             appStorage.storageSet(USER_IDENTITIES_KEY, userIdentitiesObject.toString());
             appStorage.storageSet(IDENTITY_TOKEN_KEY, jwtToken);
             appStorage.storageSet(LOGIN_DATA_KEY, JsonUtils.mapToJsonString(loginData));
@@ -590,7 +621,7 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
             return "";
         }
 
-        String token = MockBackendUserJWTTokenServer.generateJWTForUser(JsonUtils.mapToJsonString(userIdentities));
+        String token = MockBackendUserJWTTokenServer.generateJWTForUser(JsonUtils.mapToJsonString(userIdentities), iatDate);
         if (isEmpty(token)) {
             loginResponse.setText("Error generating token...");
         }
@@ -605,7 +636,7 @@ public class UserWithIdentityActivity extends AppCompatActivity implements View.
     private void updateIdentitiesOnUI() {
         try {
             JSONObject jsonObject = new JSONObject(JsonUtils.mapToJsonString(userIdentities));
-            jsonObject.put("iat", iatDate.getTime() / 1000);
+            jsonObject.put("iat", iatDate.getTimeInMillis() / 1000);
             identitiesText.setText(jsonObject.toString(4));
         } catch (Exception e) {
             identitiesText.setText(JsonUtils.mapToJsonString(userIdentities));

@@ -19,6 +19,7 @@ import com.helpshift.liteyagami.user.ReloginIdentityListener;
 import com.helpshift.util.JsonUtils;
 import com.helpshift.util.Utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,42 +50,41 @@ public class EventsListener implements HelpshiftEventsListener {
     private void reloginUser() {
       Log.d(TAG, "Trying to relogin user");
 
-      Utils.executeWithDelay(new Runnable() {
-        @Override
-        public void run() {
-          AppStorage storage = InstanceProvider.getInstance().getAppStorage();
-          String userIdentityJson = storage.storageGet(USER_IDENTITIES_KEY, "");
-          String loginDataJson = storage.storageGet(LOGIN_DATA_KEY, "");
+      Utils.executeWithDelay(() -> {
+        AppStorage storage = InstanceProvider.getInstance().getAppStorage();
+        String userIdentityJson = storage.storageGet(USER_IDENTITIES_KEY, "");
+        String loginDataJson = storage.storageGet(LOGIN_DATA_KEY, "");
 
-          Map<String, Object> userIdentities = JsonUtils.jsonStringToMap(userIdentityJson);
-          Map<String, Object> loginConfig = JsonUtils.jsonStringToMap(loginDataJson);
-          String secret = storage.storageGet(JWT_SECRET_KEY);
+        Map<String, Object> userIdentities = JsonUtils.jsonStringToMap(userIdentityJson);
+        Map<String, Object> loginConfig = JsonUtils.jsonStringToMap(loginDataJson);
+        String secret = storage.storageGet(JWT_SECRET_KEY);
 
-          MockBackendUserJWTTokenServer.initSecretKey(secret);
-          try {
-            // Add some delay to imitate server latency
-            Thread.sleep(2000);
-          }
-          catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
-
-          // If empty identities then it will be an anonymous login
-          if (Utils.isEmpty(userIdentities)) {
-            Log.d(TAG, "Relogin: Anonymous user");
-            Helpshift.loginWithIdentity("", loginConfig, new ReloginIdentityListener());
-            return;
-          }
-
-          // Remove iat since last used may have expired.
-          userIdentities.remove("iat");
-
-          String latestUserIdentityJson = JsonUtils.mapToJsonString(userIdentities);
-          String token = MockBackendUserJWTTokenServer.generateJWTForUser(latestUserIdentityJson);
-
-          Log.d(TAG, "Relogin: JWT user");
-          Helpshift.loginWithIdentity(token, loginConfig, new ReloginIdentityListener());
+        MockBackendUserJWTTokenServer.initSecretKey(secret);
+        try {
+          // Add some delay to imitate server latency
+          Thread.sleep(2000);
         }
+        catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+
+        // If empty identities then it will be an anonymous login
+        if (Utils.isEmpty(userIdentities)) {
+          Log.d(TAG, "Relogin: Anonymous user");
+          Helpshift.loginWithIdentity("", loginConfig, new ReloginIdentityListener());
+          return;
+        }
+
+        // Remove iat since last used may have expired.
+        userIdentities.remove("iat");
+
+        String latestUserIdentityJson = JsonUtils.mapToJsonString(userIdentities);
+        Calendar calendarInstance = Calendar.getInstance();
+        calendarInstance.setTimeInMillis(System.currentTimeMillis() - 60 * 60 * 1000);
+        String token = MockBackendUserJWTTokenServer.generateJWTForUser(latestUserIdentityJson, calendarInstance);
+
+        Log.d(TAG, "Relogin: JWT user");
+        Helpshift.loginWithIdentity(token, loginConfig, new ReloginIdentityListener());
       }, 1000);
     }
 }

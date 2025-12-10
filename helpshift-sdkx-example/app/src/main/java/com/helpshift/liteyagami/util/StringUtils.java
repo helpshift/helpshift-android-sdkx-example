@@ -9,11 +9,7 @@ public class StringUtils {
     }
 
     public static boolean isBooleanValue(String value) {
-
-        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
-            return true;
-        }
-        return false;
+        return "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value);
     }
 
     public static String generatePrettyStringForMap(Map<String, Object> config, String indentSpace) {

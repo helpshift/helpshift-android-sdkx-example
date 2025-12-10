@@ -1,6 +1,7 @@
 package com.helpshift.liteyagami.eventlistener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HelpshiftEventsFlow {
 
@@ -25,7 +26,7 @@ public class HelpshiftEventsFlow {
         }
     }
 
-    public ArrayList<HelpshiftEventData> getHelpshiftEvents() {
+    public List<HelpshiftEventData> getHelpshiftEvents() {
         return helpshiftEvents;
     }
 

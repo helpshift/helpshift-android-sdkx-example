@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +99,6 @@
                     android:hint="Paste Identity Token"
                     android:maxLines="6"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp"
                     android:paddingEnd="8dp" />
             </LinearLayout>
 
@@ -120,7 +120,6 @@
                         android:layout_weight="2"
                         android:maxWidth="48dp"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp"
                         android:text="identifier" />
 
                     <EditText
@@ -130,7 +129,7 @@
                         android:hint="Add identifier"
                         android:maxWidth="108dp"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp" />
+                         />
 
                 </LinearLayout>
 
@@ -146,7 +145,6 @@
                         android:layout_width="wrap_content"
                         android:layout_weight="2"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp"
                         android:text="value" />
 
                     <EditText
@@ -156,7 +154,7 @@
                         android:hint="Add value"
                         android:maxWidth="108dp"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp" />
+                         />
 
                 </LinearLayout>
 
@@ -172,7 +170,6 @@
                         android:layout_weight="1"
                         android:maxWidth="48dp"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp"
                         android:text="iat" />
 
                     <TextView
@@ -208,7 +205,6 @@
                         android:layout_width="wrap_content"
                         android:layout_weight="1"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp"
                         android:text="metadata" />
 
                     <EditText
@@ -218,7 +214,7 @@
                         android:hint="key"
                         android:maxWidth="108dp"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp" />
+                         />
 
                     <EditText
                         android:id="@+id/metaDataValue"
@@ -227,7 +223,7 @@
                         android:hint="value"
                         android:maxWidth="108dp"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp" />
+                         />
 
                     <Button
                         android:id="@+id/addMetadata"
@@ -275,7 +271,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
                         android:layout_marginBottom="2dp"
                         android:layout_weight="2"
                         android:text="Add User Identities JWT to Helpshift.addUserIdentity()"
@@ -289,7 +284,6 @@
                         android:layout_width="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
                         android:text="Add User Identities"
                         android:textColor="@android:color/black"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -309,9 +303,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="Identities payload preview" />
 
                 </LinearLayout>
@@ -326,9 +318,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:layout_marginLeft="4dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
                         android:text="{}"
                         android:textColor="#111" />
                 </LinearLayout>
@@ -344,9 +334,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:layout_marginLeft="4dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
                         android:text="Secret Key" />
 
                     <EditText
@@ -356,7 +344,6 @@
                         android:layout_weight="2"
                         android:maxLines="4"
                         android:paddingStart="8dp"
-                        android:paddingLeft="8dp"
                         android:hint="paste secret key here..." />
                 </LinearLayout>
 
@@ -373,9 +360,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="Login Data" />
 
             </LinearLayout>
@@ -393,7 +378,7 @@
                     android:layout_weight="2"
                     android:hint="key"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
 
                 <EditText
@@ -403,7 +388,7 @@
                     android:hint="value"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <Button
                     android:id="@+id/addLoginData"
@@ -424,9 +409,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="{}"
                     android:textColor="#111" />
             </LinearLayout>
@@ -443,7 +426,6 @@
                     style="@style/ButtonStyle"
                     android:layout_width="0dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="Login"
                     android:textColor="@android:color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -478,9 +460,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:text="Login Response :"
                 android:textColor="#111" />
 
@@ -556,7 +536,7 @@
                     android:hint="key"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <EditText
                     android:id="@+id/masterAttributeValue"
@@ -565,7 +545,7 @@
                     android:hint="Value"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <Button
                     android:id="@+id/addMasterAttribute"
@@ -648,9 +628,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="Master Attributes preview" />
 
             </LinearLayout>
@@ -665,9 +643,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="{}"
                     android:textColor="#111" />
             </LinearLayout>
@@ -767,7 +743,7 @@
                     android:hint="Key"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <EditText
                     android:id="@+id/appAttributeValue"
@@ -776,7 +752,7 @@
                     android:hint="Value"
                     android:maxWidth="108dp"
                     android:paddingStart="8dp"
-                    android:paddingLeft="8dp" />
+                     />
 
                 <Button
                     android:id="@+id/addAppAttribute"
@@ -859,9 +835,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="App Attributes preview" />
 
             </LinearLayout>
@@ -876,9 +850,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
                     android:text="{}"
                     android:textColor="#111" />
             </LinearLayout>

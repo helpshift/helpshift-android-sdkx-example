@@ -11,13 +11,10 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import java.util.Random;
-
 public class NotificationUtils {
 
-    public static int SESSION_CLOSE_NOTIFICATION_ID = 1001;
-    public static int PROACTIVE_NOTIFICATION_ID = 1002;
-    public static int NOTIFICATION_ID = 1002;
+    public static final int SESSION_CLOSE_NOTIFICATION_ID = 1001;
+    public static final int PROACTIVE_NOTIFICATION_ID = 1002;
 
     private NotificationUtils() {
         // empty
@@ -33,17 +30,17 @@ public class NotificationUtils {
             return;
         }
 
+        int randomInt = (int) System.currentTimeMillis() % 1000;
         int pendingIntentFlag = Build.VERSION.SDK_INT < 23 ? 0 : PendingIntent.FLAG_IMMUTABLE;
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                context, new Random().nextInt(), intent, pendingIntentFlag);
+                context, randomInt, intent, pendingIntentFlag);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setSmallIcon(icon)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(isAutoCancellable)
-                .setChannelId(channelId);
+                .setAutoCancel(isAutoCancellable);
 
         if (builder != null) {
             Notification notification = builder.build();
